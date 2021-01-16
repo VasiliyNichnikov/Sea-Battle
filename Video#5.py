@@ -221,6 +221,8 @@ def draw_map(first_draw=False):
 
 # Рисование лимита кораблей
 def draw_limit_ship(size_text_ships):
+    global number_finished_ships
+    number_finished_ships = 0
     # Словарь с кораблями
     dict_number_ships = {
         1: 4,
@@ -243,6 +245,7 @@ def draw_limit_ship(size_text_ships):
             color = RED
         elif dict_number_ships[i] == 0:
             color = GREEN
+            number_finished_ships += 1
         pygame.draw.rect(surface, color, (width + border, pos_y, block_size * i, block_size), 2)
         text = add_text(title, 35, color, True, path_font)
         text_adding_axes_y = ((pos_y + block_size) - (pos_y + text.get_height())) // 2
@@ -294,6 +297,8 @@ list_ships = []
 path_font = 'Fonts/main_font.otf'
 # Последний нажатый блок
 end_input_mouse_block = None
+# Кол-во готовых кораблей
+number_finished_ships = 0
 
 # Цвета
 WHITE = (255, 255, 255)
@@ -329,7 +334,8 @@ while runner:
     draw_limit_ship(text_ships.get_height())
     surface.blit(text_ships, (width + (additional_area_width - text_ships.get_width()) // 2, 10))
     # Отрисовка кнопки
-    button_save.draw_button()
+    if number_finished_ships == 4:
+        button_save.draw_button()
 
     # Проверка событий
     for event in pygame.event.get():
