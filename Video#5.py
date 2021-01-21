@@ -170,12 +170,12 @@ def get_blocks_nearby(select_block, condition='corners'):
 
 
 # Поиск ближайших блоков
-def search_nearest_blocks(start_block, number, list_block_passed):
+def search_nearest_blocks(start_block, list_block_passed):
     list_block_passed.append(start_block)
     blocks_nearby_cross = get_blocks_nearby(start_block, condition='cross')
     for block in blocks_nearby_cross:
         if block.condition_block == ConditionBlock.Selected and block != start_block and block not in list_block_passed:
-            search_nearest_blocks(block, number, list_block_passed)
+            search_nearest_blocks(block, list_block_passed)
     return list_block_passed
 
 
@@ -203,7 +203,7 @@ def draw_map(first_draw=False):
     if len(list_blocks) != 0:
         for block in list_blocks:
             if block.condition_block == ConditionBlock.Selected and not check_block_ship(block):
-                new_ship = Ship(search_nearest_blocks(block, 1, []))
+                new_ship = Ship(search_nearest_blocks(block, []))
                 if new_ship.len_ship > 4:
                     change_block(end_input_mouse_block)
                     break
