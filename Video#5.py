@@ -95,9 +95,6 @@ class Block:
     def change_to_empty(self):
         self.__change_condition_color(ConditionBlock.Empty, self.color_default)
 
-    def test_color(self):
-        self.__change_condition_color(ConditionBlock.Selected, (255, 255, 0))
-
     def change_to_selected(self):
         if self.condition_block == ConditionBlock.Empty:
             self.__change_condition_color(ConditionBlock.Selected, self.color_select)
@@ -116,7 +113,7 @@ class Ship:
 
 
 # Работа с блоками
-def change_block_to_selected(block):
+def change_block(block):
     block.change_to_selected()
 
     for block_nearby_corners in get_blocks_nearby(block, condition='corners'):
@@ -158,7 +155,7 @@ def check_input_mouse(pos_mouse):
         if pos_left_down_x < pos_mouse_x < pos_right_down_x and pos_left_up_y < pos_mouse_y < pos_right_down_y and \
                 block.condition_block != ConditionBlock.Lock:
             end_input_mouse_block = block
-            change_block_to_selected(block)
+            change_block(block)
             break
 
 
@@ -208,7 +205,8 @@ def draw_map(first_draw=False):
             if block.condition_block == ConditionBlock.Selected and not check_block_ship(block):
                 new_ship = Ship(search_nearest_blocks(block, 1, []))
                 if new_ship.len_ship > 4:
-                    change_block_to_selected(end_input_mouse_block)
+                    change_block(end_input_mouse_block)
+                    break
                 list_ships.append(new_ship)
 
     if first_draw:
@@ -247,7 +245,7 @@ def draw_limit_ship(size_text_ships):
             color = GREEN
             number_finished_ships += 1
         pygame.draw.rect(surface, color, (width + border, pos_y, block_size * i, block_size), 2)
-        text = add_text(title, 35, color, True, path_font)
+        text = get_text(title, 35, color, True, path_font)
         text_adding_axes_y = ((pos_y + block_size) - (pos_y + text.get_height())) // 2
         surface.blit(text,
                      ((width + border + block_size * i // 2) - text.get_width() // 2, pos_y + text_adding_axes_y))
@@ -255,7 +253,7 @@ def draw_limit_ship(size_text_ships):
 
 
 # Добавление текста в игру
-def add_text(text, size_font, color, anti_aliasing=False, path='None'):
+def get_text(text, size_font, color, anti_aliasing=False, path='None'):
     font = pygame.font.Font(path, size_font)
     text = font.render(text, anti_aliasing, color)
     return text
@@ -329,10 +327,10 @@ while runner:
     # Рисование карты
     draw_map()
     # Рисование основных текстов
-    text_ships = add_text('Корабли', 40, BLUE_AZURE, True, path_font)
+    text_ships = get_text('Корабли', 40, BLUE_AZURE, True, path_font)
+    surface.blit(text_ships, (width + (additional_area_width - text_ships.get_width()) // 2, 10))
     # Рисование текста "Корабли" в правой панели
     draw_limit_ship(text_ships.get_height())
-    surface.blit(text_ships, (width + (additional_area_width - text_ships.get_width()) // 2, 10))
     # Отрисовка кнопки
     if number_finished_ships == 4:
         button_save.draw_button()
@@ -344,8 +342,6 @@ while runner:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 check_input_mouse(event.pos)
-                # Обновляем текст по кол-ву кораблей
-                draw_limit_ship(text_ships.get_height())
                 if button_save.check_input_button(event.pos, True):
                     save_map()
         elif event.type == pygame.MOUSEBUTTONUP:
