@@ -318,7 +318,8 @@ runner = True
 # Инициализация кнопки
 button_save = Button(surface, width + (additional_area_width - block_size * 4) // 2,
                      height - block_size - 10,
-                     block_size, block_size * 4, BLACK, 'СОХРАНИТЬ', BLUE_AZURE, path_font, 30)
+                     block_size, block_size * 4, BLACK, 'ЗАПУСТИТЬ', BLUE_AZURE, path_font, 30)
+
 
 # Запуск игры
 while runner:

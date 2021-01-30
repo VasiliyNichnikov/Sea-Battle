@@ -62,6 +62,9 @@ class Ship:
         self.len_ship = len(list_blocks_ship)
         self.list_blocks_ship = list_blocks_ship
 
+        for block in self.list_blocks_ship:
+            block.len_ship = self.len_ship
+
 
 class Block:
     def __init__(self, x, y, block_size, color_default, color_select, color_lock):
@@ -69,6 +72,7 @@ class Block:
         self.pos_y = y * block_size
         self.size_block = block_size
         self.number_block = (x, y)
+        self.len_ship = 0
 
         self.pos_left_up = Point(self.pos_x, self.pos_y)
         self.pos_right_up = Point(self.pos_x + block_size, self.pos_y)
@@ -90,11 +94,10 @@ class Block:
         # self.draw_block()
 
     def change_to_lock(self, lock=False):
-        # self.__change_condition_color(ConditionBlock.Lock, self.color_lock)
+
         if lock:
             self.condition_block = ConditionBlock.Lock
         self.color_selected = self.color_lock
-        # self.draw_block()
 
     def change_to_empty(self):
         self.__change_condition_color(ConditionBlock.Empty, self.color_default)
@@ -111,33 +114,37 @@ class Block:
 
 def change_block(block):
     block.change_to_selected()
+    if block.condition_block == ConditionBlock.Selected:
+        list_selected_blocks.append(block)
+    elif block.condition_block == ConditionBlock.Empty:
+        list_selected_blocks.remove(block)
+        list_remove_selected_blocks.append(block)
 
-    for block_nearby_corners in get_blocks_nearby(block, condition='corners'):
-        if block.condition_block == ConditionBlock.Selected:
-            block_nearby_corners.list_main_blocks.append(block)
+    if len(list_remove_selected_blocks) > 0:
+        for block_remove_selected in list_remove_selected_blocks:
+            dict_blocks_corners_cross = get_blocks_nearby_cross_and_corners(block_remove_selected)
+            for block_remove in dict_blocks_corners_cross['corners'] + dict_blocks_corners_cross['cross']:
+                block_remove.len_ship = 0
+                block_remove.change_to_empty()
+            list_remove_selected_blocks.clear()
+
+    for selected_blocks in list_selected_blocks:
+        dict_blocks_corners_cross = get_blocks_nearby_cross_and_corners(selected_blocks)
+        for block_nearby_corners in dict_blocks_corners_cross['corners']:
             block_nearby_corners.change_to_lock(lock=True)
-        elif block.condition_block == ConditionBlock.Empty:
-            block_nearby_corners.list_main_blocks.remove(block)
-            if len(block_nearby_corners.list_main_blocks) == 0:
-                block_nearby_corners.change_to_empty()
+        for block_nearby_cross in dict_blocks_corners_cross['cross']:
+            block_nearby_cross.change_to_lock()
 
-    for block_nearby_cross in get_blocks_nearby(block, condition='cross'):
-        if block.condition_block == ConditionBlock.Selected:
-            block_nearby_cross.list_main_blocks.append(block)
-            if block_nearby_cross.condition_block != ConditionBlock.Selected:
-                block_nearby_cross.change_to_lock()
-        elif block.condition_block == ConditionBlock.Empty:
-            block_nearby_cross.list_main_blocks.remove(block)
-            if len(
-                    block_nearby_cross.list_main_blocks) == 0 and block_nearby_cross.condition_block != ConditionBlock.Selected:
-                block_nearby_cross.change_to_empty()
-            elif block_nearby_cross.condition_block == ConditionBlock.Selected:
-                block.change_to_lock()
+    list_ships.clear()
+    for block in list_blocks:
+        if block.condition_block == ConditionBlock.Selected and not check_block_ship(block):
+            new_ship = Ship(search_nearest_blocks(block, 1, []))
+            list_ships.append(new_ship)
 
 
 # Проверяем на какой блок нажала мышь
 def check_input_mouse(pos_mouse):
-    global end_input_mouse_block
+    # global end_input_mouse_block
     pos_mouse_x, pos_mouse_y = pos_mouse
 
     for block in list_blocks:
@@ -148,11 +155,18 @@ def check_input_mouse(pos_mouse):
         pos_right_down_x = block.pos_right_down.x
 
         if pos_left_down_x < pos_mouse_x < pos_right_down_x and pos_left_up_y < pos_mouse_y < pos_right_down_y and \
-                block.condition_block != ConditionBlock.Lock:
-            end_input_mouse_block = block
+                block.condition_block != ConditionBlock.Lock and \
+                (check_ship_nearest(block) or block.condition_block == ConditionBlock.Selected):
+            # end_input_mouse_block = block
             change_block(block)
             break
 
+
+def get_blocks_nearby_cross_and_corners(block):
+    blocks_nearby_corners = get_blocks_nearby(block, condition='corners')
+    blocks_nearby_cross = list(filter(lambda b: b.condition_block != ConditionBlock.Selected,
+                                      get_blocks_nearby(block, condition='cross')))
+    return {'corners': blocks_nearby_corners, 'cross': blocks_nearby_cross}
 
 # Получение угловых блоков
 def get_blocks_nearby(select_block, condition='corners'):
@@ -214,6 +228,18 @@ def search_nearest_blocks(start_block, number, list_block_passed):
     return list_block_passed
 
 
+def check_ship_nearest(block):
+    for ship in list_ships:
+        ready_len_ship = 0
+        for block_nearby in list(filter(lambda b: b.condition_block == ConditionBlock.Selected, get_blocks_nearby(block, condition='cross'))):
+            ready_len_ship += block_nearby.len_ship
+            if block_nearby in ship.list_blocks_ship and ship.len_ship == 4:
+                return False
+        if ready_len_ship >= 4:
+            return False
+    return True
+
+
 def check_block_ship(block):
     for ship in list_ships:
         if block in ship.list_blocks_ship:
@@ -253,16 +279,6 @@ def draw_map(first_draw=False):
         pygame.draw.line(surface, BLACK, (pos, 0), (pos, height), distance_between_blocks)
         pos += block_size
 
-    list_ships.clear()
-    if len(list_blocks) != 0:
-        for block in list_blocks:
-            if block.condition_block == ConditionBlock.Selected and not check_block_ship(block):
-                new_ship = Ship(search_nearest_blocks(block, 1, []))
-                if new_ship.len_ship > 4:
-                    change_block(end_input_mouse_block)
-                    break
-                list_ships.append(new_ship)
-
     if first_draw:
         for y in range(number_blocks):
             for x in range(number_blocks):
@@ -283,6 +299,8 @@ path_save_map = 'static/'
 end_input_mouse_block = None
 number_finished_ships = 0
 list_ships = []
+list_selected_blocks = []
+list_remove_selected_blocks = []
 path_font = 'Fonts/main_font.otf'
 
 # Цвета
