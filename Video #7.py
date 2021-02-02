@@ -89,28 +89,25 @@ class Ship:
 def change_block(block):
     block.change_to_selected()
 
-    for block_nearby_corners in get_blocks_nearby(block, condition='corners'):
-        if block.condition_block == ConditionBlock.Selected:
-            block_nearby_corners.list_main_blocks.append(block)
+    if block.condition_block == ConditionBlock.Selected:
+        list_blocks_selected.append(block)
+    elif block.condition_block == ConditionBlock.Empty:
+        list_blocks_selected.remove(block)
+        list_blocks_remove_selected.append(block)
+
+    if len(list_blocks_remove_selected) > 0:
+        for block_remove_selected in list_blocks_remove_selected:
+            dict_blocks_corners_cross = get_blocks_nearby_cross_and_corners(block_remove_selected)
+            for block_nearby in dict_blocks_corners_cross['corners'] + dict_blocks_corners_cross['cross']:
+                block_nearby.change_to_empty()
+        list_blocks_remove_selected.clear()
+
+    for block_selected in list_blocks_selected:
+        dict_blocks_corners_cross = get_blocks_nearby_cross_and_corners(block_selected)
+        for block_nearby_corners in dict_blocks_corners_cross['corners']:
             block_nearby_corners.change_to_lock(lock=True)
-        elif block.condition_block == ConditionBlock.Empty:
-            block_nearby_corners.list_main_blocks.remove(block)
-            if len(block_nearby_corners.list_main_blocks) == 0:
-                block_nearby_corners.change_to_empty()
-
-    for block_nearby_cross in get_blocks_nearby(block, condition='cross'):
-        if block.condition_block == ConditionBlock.Selected:
-            block_nearby_cross.list_main_blocks.append(block)
-            if block_nearby_cross.condition_block != ConditionBlock.Selected:
-                block_nearby_cross.change_to_lock()
-
-        elif block.condition_block == ConditionBlock.Empty:
-            block_nearby_cross.list_main_blocks.remove(block)
-            if len(block_nearby_cross.list_main_blocks) == 0 \
-                    and block_nearby_cross.condition_block != ConditionBlock.Selected:
-                block_nearby_cross.change_to_empty()
-            elif block_nearby_cross.condition_block == ConditionBlock.Selected:
-                block.change_to_lock()
+        for block_nearby_cross in dict_blocks_corners_cross['cross']:
+            block_nearby_cross.change_to_lock()
 
 
 # Получение блоков рядом
@@ -121,6 +118,14 @@ def get_blocks_nearby(select_block, condition='corners'):
     else:
         list_positions_blocks = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
     return [block for block in list_blocks if block.number_block in list_positions_blocks]
+
+
+# Возвращает блоки вокруг блока
+def get_blocks_nearby_cross_and_corners(block):
+    blocks_nearby_corners = get_blocks_nearby(block, condition='corners')
+    blocks_nearby_cross = list(filter(lambda b: b.condition_block != ConditionBlock.Selected,
+                                      get_blocks_nearby(block, condition='cross')))
+    return {'corners': blocks_nearby_corners, 'cross': blocks_nearby_cross}
 
 
 # Поиск кораблей
@@ -144,6 +149,7 @@ def draw_map(first_draw=False):
             number_destroyed_ships += 1
             for block in ship.list_blocks_ship:
                 change_block(block)
+
     for block in list_blocks:
         block.draw_block()
 
@@ -212,6 +218,10 @@ distance_between_blocks = 2
 list_blocks = []
 # Спиок кораблей
 list_ships = []
+# Список выбранных кораблей
+list_blocks_selected = []
+# Список удаленных кораблей
+list_blocks_remove_selected = []
 # Путь до папки с сохранением карты
 path_save_map = 'static/map.json'
 # Карта в виде списка
