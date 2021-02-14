@@ -223,7 +223,7 @@ list_blocks_selected = []
 # Список удаленных кораблей
 list_blocks_remove_selected = []
 # Путь до папки с сохранением карты
-path_save_map = 'static/map.json'
+path_save_map = 'static/map_player.json'
 # Карта в виде списка
 list_ships_map = open_json()['description']
 # Кол-во уничтоженных кораблей

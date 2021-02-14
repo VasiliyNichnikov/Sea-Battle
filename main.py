@@ -168,6 +168,7 @@ def get_blocks_nearby_cross_and_corners(block):
                                       get_blocks_nearby(block, condition='cross')))
     return {'corners': blocks_nearby_corners, 'cross': blocks_nearby_cross}
 
+
 # Получение угловых блоков
 def get_blocks_nearby(select_block, condition='corners'):
     x, y = select_block.number_block
@@ -249,7 +250,7 @@ def check_block_ship(block):
 
 # Сохранение карты
 def save_map():
-    with open(path_save_map + 'map.json', 'w', encoding='utf-8') as json_write:
+    with open(path_save_map + 'map_player.json', 'w', encoding='utf-8') as json_write:
         ready_list = []
         number = 0
         for i in range(number_blocks):

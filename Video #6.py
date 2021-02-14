@@ -147,7 +147,7 @@ def change_block(block):
         list_ships.clear()
         for _block in list_blocks:
             if _block.condition_block == ConditionBlock.Selected and not check_block_ship(_block):
-                new_ship = Ship(search_nearest_blocks(_block, 1, []))
+                new_ship = Ship(search_nearest_blocks(_block, []))
                 list_ships.append(new_ship)
 
 
@@ -242,12 +242,12 @@ def check_ship_nearest(block):
 
 
 # Поиск ближайших блоков, которые создают корабли
-def search_nearest_blocks(start_block, number, list_block_passed):
+def search_nearest_blocks(start_block, list_block_passed):
     list_block_passed.append(start_block)
     block_nearby_cross = get_blocks_nearby(start_block, condition='cross')
     for block in block_nearby_cross:
         if block.condition_block == ConditionBlock.Selected and block != start_block and block not in list_block_passed:
-            search_nearest_blocks(block, number, list_block_passed)
+            search_nearest_blocks(block, list_block_passed)
     return list_block_passed
 
 

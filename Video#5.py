@@ -261,7 +261,7 @@ def get_text(text, size_font, color, anti_aliasing=False, path='None'):
 
 # Сохранение карты в файл
 def save_map():
-    with open(path_save_map + 'map.json', 'w') as json_write:
+    with open(path_save_map + 'map_player.json', 'w') as json_write:
         ready_list = []
         number = 0
         for i in range(number_blocks):
