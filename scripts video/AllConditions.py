@@ -9,6 +9,12 @@ class ConditionMap(Enum):
     Enemy = 1
 
 
+# Функция, которую нужно запустить у карты
+class ConditionFunctionMap(Enum):
+    Draw_Map = 0
+    Check_Input_Mouse = 1
+
+
 # Состояние корабля
 class ConditionShip(Enum):
     Afloat = 0

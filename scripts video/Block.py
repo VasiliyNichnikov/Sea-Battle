@@ -1,4 +1,5 @@
 from AllConditions import ConditionBlock
+import pygame
 
 
 # Класс служит вектором 2
@@ -8,17 +9,16 @@ class Point:
         self.y = y
 
 
-"""  Класс блока, используется для проверки, что в данный момент происходит с конкретным блоком """
-
-
 class Block:
+    """  Класс блока, используется для проверки, что в данный момент происходит с конкретным блоком """
+
     def __init__(self, x, y, border_x, border_y, block_size, color_default, color_select, color_lock) -> None:
         # Позиция блока по оси X
         self.pos_x = x * block_size + border_x
         # Позиция блока по оси Y
         self.pos_y = y * block_size + border_y
         # Размер блока
-        self.size_block = block_size
+        self.block_size = block_size
         # Номер блока
         self.number_block = (x, y)
         # Длина корабля в котором находится данный блок
@@ -34,6 +34,8 @@ class Block:
         self.color_default = color_default
         self.color_select = color_select
         self.color_lock = color_lock
+
+        self.rect = pygame.Rect(self.pos_x, self.pos_y, self.block_size, self.block_size)
 
         # Цвет, который выбран в данный момент у блока
         self.color_selected = self.color_default
@@ -59,7 +61,12 @@ class Block:
     def change_to_selected(self) -> None:
         self.__change_condition_color(ConditionBlock.Selected, self.color_select)
 
+    # Проверка нажатия на блок
+    def check_input_block(self, mouse) -> bool:
+        if self.rect.topleft[0] < mouse[0] < self.rect.bottomright[0] and self.rect.topleft[1] < mouse[1] < self.rect.bottomright[1]:
+            return True
+        return False
+
     # Получение информации о блоке, для того, чтобы разукрасить
     def get_info_draw_block(self) -> dict:
-        return {'color_selected': self.color_select,
-                'position': (self.pos_x, self.pos_y, self.size_block, self.size_block)}
+        return {'color_selected': self.color_selected, 'position': self.rect}
