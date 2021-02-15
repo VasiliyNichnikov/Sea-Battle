@@ -69,4 +69,4 @@ class Block:
 
     # Получение информации о блоке, для того, чтобы разукрасить
     def get_info_draw_block(self) -> dict:
-        return {'color_selected': self.color_selected, 'position': self.rect}
+        return {'color_selected': self.color_selected, 'position': self.rect, 'number_block': self.number_block}

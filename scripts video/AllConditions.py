@@ -3,10 +3,16 @@ from enum import Enum
 """ Состояния различных компонентов игры"""
 
 
-# Состояние карты
-class ConditionMap(Enum):
+# Состояние карты игрока
+class ConditionPlayerMap(Enum):
     Player = 0
     Enemy = 1
+
+
+# Состояние карты
+class ConditionMap(Enum):
+    Default = 0
+    Lock = 1
 
 
 # Функция, которую нужно запустить у карты

@@ -1,5 +1,5 @@
 from Block import Block
-from AllConditions import ConditionMap
+from AllConditions import ConditionMap, ConditionPlayerMap
 from ColorsAndMainParameters import WHITE, BLACK, RED
 from ColorsAndMainParameters import number_blocks, block_size, border, distance_between_blocks, \
     distance_screen_up_maps, height, width, distance_between_maps
@@ -9,11 +9,13 @@ import pygame
 
 
 class Map:
-    def __init__(self, surface, name, condition_map, list_json_file=None):
+    def __init__(self, surface, name, condition_player_map, list_json_file=None):
         # Имя карты
         self.name = name
+        # Состояние карты игрока
+        self.condition_player_map = condition_player_map
         # Состояние карты
-        self.condition_map = condition_map
+        self.condition_map = ConditionMap.Default
         # Список блоков из json файла
         self.list_json_file = list_json_file
 
@@ -22,7 +24,7 @@ class Map:
         # Граница по оси Y
         self.border_y = distance_screen_up_maps
 
-        if self.condition_map == ConditionMap.Player:
+        if self.condition_player_map == ConditionPlayerMap.Player:
             # Граница по оси X
             self.border_x = border
 
@@ -38,6 +40,7 @@ class Map:
         # Преобразование блоков из json файла
         if self.list_json_file is not None:
             self.__convert_json_file()
+            self.condition_map = ConditionMap.Lock
 
     # Преобразовать json файл блоков
     def __convert_json_file(self):
@@ -69,7 +72,7 @@ class Map:
 
         pos = block_size
         for line in range(number_blocks - 1):
-            if self.condition_map == ConditionMap.Player:
+            if self.condition_player_map == ConditionPlayerMap.Player:
                 point_start_line_one, point_end_line_one = (border, pos + distance_screen_up_maps), (
                     height + border, pos + distance_screen_up_maps)
                 point_start_line_two, point_end_line_two = (pos + border, distance_screen_up_maps), (
@@ -96,10 +99,18 @@ class Map:
                          (width + distance_between_maps, distance_screen_up_maps, width, height),
                          distance_between_blocks * 2)
 
+    # Получение блока по position блока
+    def get_block_using_position(self, position):
+        for block in self.list_blocks:
+            if block.number_block == position:
+                return block
+        # Ошибка, такого не должно быть
+        return None
+
     # Проверка нажатия на карту
     def check_input_map(self, mouse) -> None:
         if self.rect.topleft[0] < mouse[0] < self.rect.bottomright[0] and self.rect.topleft[1] < mouse[1] < \
-                self.rect.bottomright[1]:
+                self.rect.bottomright[1] and self.condition_map != ConditionMap.Lock:
             # Проверка блока, на который нажали
             for block in self.list_blocks:
                 if block.check_input_block(mouse):

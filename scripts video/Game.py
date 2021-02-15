@@ -1,5 +1,5 @@
 from Map import Map
-from AllConditions import ConditionMap, ConditionFunctionMap
+from AllConditions import ConditionPlayerMap, ConditionFunctionMap
 from TextAndButton import Text
 from ColorsAndMainParameters import WHITE, BLUE_AZURE, RED
 from ColorsAndMainParameters import height, width, distance_between_maps, border, distance_screen_up_maps, path_font, \
@@ -9,11 +9,13 @@ import pygame
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, player_id):
         # Создание карты
-        def create_map(name, condition_map, list_json_file=None):
-            new_map = Map(name=name, condition_map=condition_map, surface=self.surface, list_json_file=list_json_file)
+        def create_map(name, condition_player_map, list_json_file=None):
+            new_map = Map(name=name, condition_player_map=condition_player_map, surface=self.surface, list_json_file=list_json_file)
             self.list_maps.append(new_map)
+        # id игрока
+        self.player_id = player_id
 
         # Кол-во FPS
         self.FPS = 60
@@ -31,9 +33,9 @@ class Game:
         self.surface.fill(WHITE)
 
         # Создание карты игрока
-        create_map('Player', ConditionMap.Player, self.__open_json(path_json_player)['description'])
+        create_map('Player', ConditionPlayerMap.Player, self.__open_json(path_json_player)['description'])
         # Создание карты противника
-        create_map('Enemy', ConditionMap.Enemy)
+        create_map('Enemy', ConditionPlayerMap.Enemy)
         # Создание текста
         self.nickname_player_text = Text(self.surface, 'PLAYER', 40, BLUE_AZURE, True, path_font)
         self.nickname_enemy_text = Text(self.surface, 'ENEMY_258', 40, RED, True, path_font)
@@ -86,5 +88,5 @@ class Game:
 
 
 if __name__ == '__main__':
-    game = Game()
+    game = Game('player123')
     game.start_game()
