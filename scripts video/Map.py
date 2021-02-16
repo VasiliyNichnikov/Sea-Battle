@@ -104,15 +104,6 @@ class Map:
 
             pos += block_size
 
-        # print(condition_motion)
-        # # Отрисовка рамки врага и игрока
-        # if condition_motion == ConditionMotion.Player:
-        #     color_player, color_enemy = GREEN, BLACK
-        # else:
-        #     color_player, color_enemy = BLACK, RED
-
-
-
     # Получение блока по position блока
     def get_block_using_position(self, position):
         for block in self.list_blocks:
