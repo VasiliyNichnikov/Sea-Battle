@@ -69,7 +69,7 @@ class Game:
             elif condition_function_map == ConditionFunctionMap.Destroy_Block and \
                     select_map.condition_player_map == kwargs['condition_map']:
                 block = select_map.get_block_using_position(kwargs['position_block'])
-                block.change_to_selected()
+                block.change_to_hit()
 
     # Открытие json файла
     def __open_json(self, path_map) -> dict:

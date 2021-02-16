@@ -12,7 +12,7 @@ class Point:
 class Block:
     """  Класс блока, используется для проверки, что в данный момент происходит с конкретным блоком """
 
-    def __init__(self, x, y, border_x, border_y, block_size, color_default, color_select, color_lock) -> None:
+    def __init__(self, x, y, border_x, border_y, block_size, color_default, color_select, color_hit, color_lock) -> None:
         # Позиция блока по оси X
         self.pos_x = x * block_size + border_x
         # Позиция блока по оси Y
@@ -34,6 +34,7 @@ class Block:
         self.color_default = color_default
         self.color_select = color_select
         self.color_lock = color_lock
+        self.color_hit = color_hit
 
         self.rect = pygame.Rect(self.pos_x, self.pos_y, self.block_size, self.block_size)
 
@@ -56,6 +57,10 @@ class Block:
     # Смена состояния блока на пустое
     def change_to_empty(self) -> None:
         self.__change_condition_color(ConditionBlock.Empty, self.color_default)
+
+    # Смена состояния блока на поврежденный
+    def change_to_hit(self) -> None:
+        self.__change_condition_color(ConditionBlock.Hit, self.color_hit)
 
     # Смена состояния блока на выбранный
     def change_to_selected(self) -> None:

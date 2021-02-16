@@ -1,6 +1,6 @@
 from Block import Block
 from AllConditions import ConditionMap, ConditionPlayerMap
-from ColorsAndMainParameters import WHITE, BLACK, RED
+from ColorsAndMainParameters import WHITE, BLACK, RED, GREEN
 from ColorsAndMainParameters import number_blocks, block_size, border, distance_between_blocks, \
     distance_screen_up_maps, height, width, distance_between_maps
 import pygame
@@ -61,6 +61,7 @@ class Map:
                                   block_size=block_size,
                                   color_select=BLACK,
                                   color_default=WHITE,
+                                  color_hit=GREEN,
                                   color_lock=RED)
                 self.list_blocks.append(new_block)
 
