@@ -102,7 +102,7 @@ class Map:
     # Получение блока по position блока
     def get_block_using_position(self, position):
         for block in self.list_blocks:
-            if block.number_block == position:
+            if block.number_block == tuple(position):
                 return block
         # Ошибка, такого не должно быть
         return None

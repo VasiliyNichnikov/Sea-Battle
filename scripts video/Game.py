@@ -63,11 +63,11 @@ class Game:
                 block = select_map.get_block_input_map(kwargs['position_mouse'])
                 if block is not None:
                     # Отправка информации на сервер
-                    answer = self.connect_server.send({'player_id': self.player_id,
-                                                       'function': 'attack',
-                                                       'parameters': {'block': block.number_block}})
-                    print(answer)
-            elif condition_function_map == ConditionFunctionMap.Destroy_Block:
+                    self.connect_server.send({'player_id': self.player_id,
+                                              'function': 'attack',
+                                              'parameters': {'block': block.number_block}})
+            elif condition_function_map == ConditionFunctionMap.Destroy_Block and \
+                    select_map.condition_player_map == kwargs['condition_map']:
                 block = select_map.get_block_using_position(kwargs['position_block'])
                 block.change_to_selected()
 
@@ -109,13 +109,16 @@ class Game:
             answer = self.connect_server.send({'player_id': self.player_id, 'get_info': True})
             if answer['function'] != 'processing':
                 if answer['function'] == 'attack':
-                    block = answer['parameters']['block']
-                    print(f"Блок - {block} уничтожен")
+                    position_block = answer['parameters']['block']
+                    print(f"Блок - {position_block} уничтожен")
                     self.connect_server.send({'player_id': self.player_id, 'function': 'destroyed',
-                                              'parameters': {'block': block}})
+                                              'parameters': {'block': position_block}})
+                    self.start_function_map(ConditionFunctionMap.Destroy_Block, position_block=position_block,
+                                            condition_map=ConditionPlayerMap.Player)
                 elif answer['function'] == 'destroyed':
-                    block = answer['parameters']['block']
-                    self.start_function_map(ConditionFunctionMap.Destroy_Block, position_block=block)
+                    position_block = answer['parameters']['block']
+                    self.start_function_map(ConditionFunctionMap.Destroy_Block, position_block=position_block,
+                                            condition_map=ConditionPlayerMap.Enemy)
                 # print(answer)
             pygame.display.flip()
         self.surface.fill(WHITE)
