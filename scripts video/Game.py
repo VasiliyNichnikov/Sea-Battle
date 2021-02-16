@@ -22,6 +22,8 @@ class Game:
         # Подключение к серверу
         self.connect_server = ConnectServer(host='25.68.177.81', port=5000)  # player_id=player_id,
         self.player_id = self.connect_server.player_id
+        # Кто из игроков сейчас ходит
+        self.condition_motion = ConditionPlayerMap.Player
 
         # Кол-во FPS
         self.FPS = 60
@@ -45,14 +47,6 @@ class Game:
         # Создание текста
         self.nickname_player_text = Text(self.surface, 'PLAYER', 40, BLUE_AZURE, True, path_font)
         self.nickname_enemy_text = Text(self.surface, 'ENEMY_258', 40, RED, True, path_font)
-
-    # Отправка данных
-    # def send_data(self):
-    #     data = {'player_id': self.connect_server.player_id,
-    #             'function': 'attack',
-    #             'parameters': {'block': (0, 1)}}
-    #     reply = self.connect_server.send(data)
-    #     return reply
 
     # Запуск функции в классе Map
     def start_function_map(self, condition_function_map, **kwargs):
@@ -110,7 +104,7 @@ class Game:
             if answer['function'] != 'processing':
                 if answer['function'] == 'attack':
                     position_block = answer['parameters']['block']
-                    print(f"Блок - {position_block} уничтожен")
+                    # print(f"Блок - {position_block} уничтожен")
                     self.connect_server.send({'player_id': self.player_id, 'function': 'destroyed',
                                               'parameters': {'block': position_block}})
                     self.start_function_map(ConditionFunctionMap.Destroy_Block, position_block=position_block,
