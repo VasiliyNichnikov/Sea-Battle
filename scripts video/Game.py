@@ -54,18 +54,17 @@ class Game:
         for select_map in self.list_maps:
             if condition_function_map == ConditionFunctionMap.Draw_Map:
                 select_map.draw_map(self.condition_motion)
-            elif condition_function_map == ConditionFunctionMap.Check_Input_Mouse \
-                    and self.condition_motion == ConditionPlayerMap.Player:
+            elif condition_function_map == ConditionFunctionMap.Check_Input_Mouse:
                 block = select_map.get_block_input_map(kwargs['position_mouse'])
                 if block is not None:
                     # Отправка информации на сервер
                     self.connect_server.send({'player_id': self.player_id,
                                               'function': 'attack',
                                               'parameters': {'block': block.number_block}})
-                    self.condition_motion = ConditionPlayerMap.Enemy
+                    # self.condition_motion = ConditionPlayerMap.Enemy
             elif condition_function_map == ConditionFunctionMap.Destroy_Block and \
                     select_map.condition_player_map == kwargs['condition_map']:
-                self.condition_motion = ConditionPlayerMap.Player
+                # self.condition_motion = ConditionPlayerMap.Player
                 block = select_map.get_block_using_position(kwargs['position_block'])
                 block.change_to_hit()
 
@@ -106,6 +105,7 @@ class Game:
             answer = self.connect_server.send({'player_id': self.player_id, 'get_info': True})
             if answer['function'] != 'processing':
                 if answer['function'] == 'attack':
+                    # self.condition_motion = ConditionPlayerMap.Player
                     position_block = answer['parameters']['block']
                     # print(f"Блок - {position_block} уничтожен")
                     self.connect_server.send({'player_id': self.player_id, 'function': 'destroyed',
