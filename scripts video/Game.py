@@ -67,6 +67,9 @@ class Game:
                                                        'function': 'attack',
                                                        'parameters': {'block': block.number_block}})
                     print(answer)
+            elif condition_function_map == ConditionFunctionMap.Destroy_Block:
+                block = select_map.get_block_using_position(kwargs['position_block'])
+                block.change_to_selected()
 
     # Открытие json файла
     def __open_json(self, path_map) -> dict:
@@ -102,9 +105,18 @@ class Game:
                         self.start_function_map(ConditionFunctionMap.Check_Input_Mouse, position_mouse=event.pos)
                 elif event.type == pygame.MOUSEBUTTONUP:
                     pass
+            # Работа с сервером
             answer = self.connect_server.send({'player_id': self.player_id, 'get_info': True})
             if answer['function'] != 'processing':
-                print(answer)
+                if answer['function'] == 'attack':
+                    block = answer['parameters']['block']
+                    print(f"Блок - {block} уничтожен")
+                    self.connect_server.send({'player_id': self.player_id, 'function': 'destroyed',
+                                              'parameters': {'block': block}})
+                elif answer['function'] == 'destroyed':
+                    block = answer['parameters']['block']
+                    self.start_function_map(ConditionFunctionMap.Destroy_Block, position_block=block)
+                # print(answer)
             pygame.display.flip()
         self.surface.fill(WHITE)
 

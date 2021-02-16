@@ -19,6 +19,7 @@ class ConditionMap(Enum):
 class ConditionFunctionMap(Enum):
     Draw_Map = 0
     Check_Input_Mouse = 1
+    Destroy_Block = 2
 
 
 # Состояние корабля
