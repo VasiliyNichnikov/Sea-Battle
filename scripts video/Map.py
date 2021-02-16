@@ -66,11 +66,12 @@ class Map:
                 self.list_blocks.append(new_block)
 
     # Отрисовка карты
-    def draw_map(self) -> None:
+    def draw_map(self, condition_motion) -> None:
         for block in self.list_blocks:
             parameters_block = block.get_info_draw_block()
             pygame.draw.rect(self.surface, parameters_block['color_selected'], parameters_block['position'])
 
+        color_frame = BLACK
         pos = block_size
         for line in range(number_blocks - 1):
             if self.condition_player_map == ConditionPlayerMap.Player:
@@ -78,6 +79,11 @@ class Map:
                     height + border, pos + distance_screen_up_maps)
                 point_start_line_two, point_end_line_two = (pos + border, distance_screen_up_maps), (
                     pos + border, height + distance_screen_up_maps)
+                position_frame = (border, distance_screen_up_maps, height, width)
+
+                if condition_motion == ConditionPlayerMap.Player:
+                    color_frame = GREEN
+
             else:
                 point_start_line_one, point_end_line_one = (distance_between_maps + width,
                                                             pos + distance_screen_up_maps), (
@@ -86,19 +92,26 @@ class Map:
                 point_start_line_two, point_end_line_two = (distance_between_maps + width + pos,
                                                             distance_screen_up_maps), (
                                                                distance_between_maps + width + pos,
-                                                               height + distance_screen_up_maps),
+                                                               height + distance_screen_up_maps)
+                position_frame = (width + distance_between_maps, distance_screen_up_maps, width, height)
+
+                if condition_motion == ConditionPlayerMap.Enemy:
+                    color_frame = RED
 
             pygame.draw.line(self.surface, BLACK, point_start_line_one, point_end_line_one, distance_between_blocks)
             pygame.draw.line(self.surface, BLACK, point_start_line_two, point_end_line_two, distance_between_blocks)
+            pygame.draw.rect(self.surface, color_frame, position_frame, distance_between_blocks * 2)
+
             pos += block_size
 
-        # Отрисовка рамки врага и игрока
-        color_player, color_enemy = BLACK, BLACK
-        pygame.draw.rect(self.surface, color_player, (border, distance_screen_up_maps, height, width),
-                         distance_between_blocks * 2)
-        pygame.draw.rect(self.surface, color_enemy,
-                         (width + distance_between_maps, distance_screen_up_maps, width, height),
-                         distance_between_blocks * 2)
+        # print(condition_motion)
+        # # Отрисовка рамки врага и игрока
+        # if condition_motion == ConditionMotion.Player:
+        #     color_player, color_enemy = GREEN, BLACK
+        # else:
+        #     color_player, color_enemy = BLACK, RED
+
+
 
     # Получение блока по position блока
     def get_block_using_position(self, position):

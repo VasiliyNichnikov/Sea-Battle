@@ -17,13 +17,14 @@ class Game:
                           list_json_file=list_json_file)
             self.list_maps.append(new_map)
 
-        # id игрока
-        # self.player_id = player_id
         # Подключение к серверу
         self.connect_server = ConnectServer(host='25.68.177.81', port=5000)  # player_id=player_id,
         self.player_id = self.connect_server.player_id
+        self.first_motion = self.connect_server.first_motion
         # Кто из игроков сейчас ходит
         self.condition_motion = ConditionPlayerMap.Player
+        if not self.first_motion:
+            self.condition_motion = ConditionPlayerMap.Enemy
 
         # Кол-во FPS
         self.FPS = 60
@@ -52,7 +53,7 @@ class Game:
     def start_function_map(self, condition_function_map, **kwargs):
         for select_map in self.list_maps:
             if condition_function_map == ConditionFunctionMap.Draw_Map:
-                select_map.draw_map()
+                select_map.draw_map(self.condition_motion)
             elif condition_function_map == ConditionFunctionMap.Check_Input_Mouse:
                 block = select_map.get_block_input_map(kwargs['position_mouse'])
                 if block is not None:
@@ -89,7 +90,6 @@ class Game:
                     border + width // 2 - self.nickname_enemy_text.text.get_width() // 2 + width + distance_between_maps,
                     distance_screen_up_maps // 2 - self.nickname_enemy_text.text.get_height() // 2 - border)
             )
-
             # Обработка событий
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -113,7 +113,6 @@ class Game:
                     position_block = answer['parameters']['block']
                     self.start_function_map(ConditionFunctionMap.Destroy_Block, position_block=position_block,
                                             condition_map=ConditionPlayerMap.Enemy)
-                # print(answer)
             pygame.display.flip()
         self.surface.fill(WHITE)
 

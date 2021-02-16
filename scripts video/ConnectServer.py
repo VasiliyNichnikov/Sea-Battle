@@ -8,7 +8,8 @@ class ConnectServer:
         self.host = host
         self.port = port
         self.addr = (self.host, self.port)
-        self.player_id, self.first_motion = self.connect()['player_id'], self.connect()['first_motion']
+        player_id_and_first_motion = self.connect()
+        self.player_id, self.first_motion = player_id_and_first_motion['player_id'], player_id_and_first_motion['first_motion']
         print(f'Id игрока - {self.player_id}; First Motion - {self.first_motion}')
         # print(self.player_id, self.)
         # print(f'Id - {self.id}')

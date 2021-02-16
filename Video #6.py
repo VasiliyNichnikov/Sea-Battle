@@ -261,7 +261,7 @@ def check_block_ship(block):
 
 # Сохранение карты
 def save_map():
-    with open(path_save_map + 'map.json', 'w', encoding='utf-8') as json_write:
+    with open(path_save_map + 'map_player.json', 'w', encoding='utf-8') as json_write:
         ready_list = []
         number = 0
         for i in range(number_blocks):
