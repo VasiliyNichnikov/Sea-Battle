@@ -10,7 +10,7 @@ import pygame
 
 
 class Game:
-    def __init__(self, player_id):
+    def __init__(self):
         # Создание карты
         def create_map(name, condition_player_map, list_json_file=None):
             new_map = Map(name=name, condition_player_map=condition_player_map, surface=self.surface,
@@ -18,9 +18,10 @@ class Game:
             self.list_maps.append(new_map)
 
         # id игрока
-        self.player_id = player_id
+        # self.player_id = player_id
         # Подключение к серверу
-        self.connect_server = ConnectServer(port=5000)  # player_id=player_id,
+        self.connect_server = ConnectServer(host='25.68.177.81', port=5000)  # player_id=player_id,
+        self.player_id = self.connect_server.player_id
 
         # Кол-во FPS
         self.FPS = 60
@@ -46,12 +47,12 @@ class Game:
         self.nickname_enemy_text = Text(self.surface, 'ENEMY_258', 40, RED, True, path_font)
 
     # Отправка данных
-    def send_data(self):
-        data = {'player_id': self.player_id,
-                'function': 'test function',
-                'parameters': {'block': (0, 1)}}
-        reply = self.connect_server.send(data)
-        return reply
+    # def send_data(self):
+    #     data = {'player_id': self.connect_server.player_id,
+    #             'function': 'attack',
+    #             'parameters': {'block': (0, 1)}}
+    #     reply = self.connect_server.send(data)
+    #     return reply
 
     # Запуск функции в классе Map
     def start_function_map(self, condition_function_map, **kwargs):
@@ -61,9 +62,11 @@ class Game:
             elif condition_function_map == ConditionFunctionMap.Check_Input_Mouse:
                 block = select_map.get_block_input_map(kwargs['position_mouse'])
                 if block is not None:
-                    print(f'Ответ - {self.send_data()}')
-                    if self.send_data()['function'] == 'selected':
-                        block.change_to_selected()
+                    # Отправка информации на сервер
+                    answer = self.connect_server.send({'player_id': self.player_id,
+                                                       'function': 'attack',
+                                                       'parameters': {'block': block.number_block}})
+                    print(answer)
 
     # Открытие json файла
     def __open_json(self, path_map) -> dict:
@@ -99,11 +102,13 @@ class Game:
                         self.start_function_map(ConditionFunctionMap.Check_Input_Mouse, position_mouse=event.pos)
                 elif event.type == pygame.MOUSEBUTTONUP:
                     pass
-
+            answer = self.connect_server.send({'player_id': self.player_id, 'get_info': True})
+            if answer['function'] != 'processing':
+                print(answer)
             pygame.display.flip()
         self.surface.fill(WHITE)
 
 
 if __name__ == '__main__':
-    game = Game('player123')
+    game = Game()
     game.start_game()

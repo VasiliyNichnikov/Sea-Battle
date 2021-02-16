@@ -8,7 +8,8 @@ class ConnectServer:
         self.host = host
         self.port = port
         self.addr = (self.host, self.port)
-        self.id = self.connect()
+        self.player_id = self.connect()
+        # print(f'Id - {self.id}')
         print('Подключение к серверу завершено')
         # Сделать проверку на ошибки, если нет интернета
 
