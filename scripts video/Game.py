@@ -4,6 +4,7 @@ from TextAndButton import Text
 from ColorsAndMainParameters import WHITE, BLUE_AZURE, RED
 from ColorsAndMainParameters import height, width, distance_between_maps, border, distance_screen_up_maps, path_font, \
     path_json_player
+from ConnectServer import ConnectServer
 import json
 import pygame
 
@@ -12,10 +13,14 @@ class Game:
     def __init__(self, player_id):
         # Создание карты
         def create_map(name, condition_player_map, list_json_file=None):
-            new_map = Map(name=name, condition_player_map=condition_player_map, surface=self.surface, list_json_file=list_json_file)
+            new_map = Map(name=name, condition_player_map=condition_player_map, surface=self.surface,
+                          list_json_file=list_json_file)
             self.list_maps.append(new_map)
+
         # id игрока
         self.player_id = player_id
+        # Подключение к серверу
+        self.connect_server = ConnectServer(port=5000)  # player_id=player_id,
 
         # Кол-во FPS
         self.FPS = 60
@@ -40,13 +45,25 @@ class Game:
         self.nickname_player_text = Text(self.surface, 'PLAYER', 40, BLUE_AZURE, True, path_font)
         self.nickname_enemy_text = Text(self.surface, 'ENEMY_258', 40, RED, True, path_font)
 
+    # Отправка данных
+    def send_data(self):
+        data = {'player_id': self.player_id,
+                'function': 'test function',
+                'parameters': {'block': (0, 1)}}
+        reply = self.connect_server.send(data)
+        return reply
+
     # Запуск функции в классе Map
     def start_function_map(self, condition_function_map, **kwargs):
         for select_map in self.list_maps:
             if condition_function_map == ConditionFunctionMap.Draw_Map:
                 select_map.draw_map()
             elif condition_function_map == ConditionFunctionMap.Check_Input_Mouse:
-                select_map.check_input_map(kwargs['position_mouse'])
+                block = select_map.get_block_input_map(kwargs['position_mouse'])
+                if block is not None:
+                    print(f'Ответ - {self.send_data()}')
+                    if self.send_data()['function'] == 'selected':
+                        block.change_to_selected()
 
     # Открытие json файла
     def __open_json(self, path_map) -> dict:
@@ -69,8 +86,8 @@ class Game:
             )
             self.nickname_enemy_text.draw_text(
                 position=(
-                border + width // 2 - self.nickname_enemy_text.text.get_width() // 2 + width + distance_between_maps,
-                distance_screen_up_maps // 2 - self.nickname_enemy_text.text.get_height() // 2 - border)
+                    border + width // 2 - self.nickname_enemy_text.text.get_width() // 2 + width + distance_between_maps,
+                    distance_screen_up_maps // 2 - self.nickname_enemy_text.text.get_height() // 2 - border)
             )
 
             # Обработка событий

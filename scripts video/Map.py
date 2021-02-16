@@ -107,12 +107,12 @@ class Map:
         # Ошибка, такого не должно быть
         return None
 
-    # Проверка нажатия на карту
-    def check_input_map(self, mouse) -> None:
+    # Возвращает блок на который нажал игрок
+    def get_block_input_map(self, mouse):
         if self.rect.topleft[0] < mouse[0] < self.rect.bottomright[0] and self.rect.topleft[1] < mouse[1] < \
                 self.rect.bottomright[1] and self.condition_map != ConditionMap.Lock:
             # Проверка блока, на который нажали
             for block in self.list_blocks:
                 if block.check_input_block(mouse):
-                    block.change_to_selected()
-                    break
+                    return block
+        return None
