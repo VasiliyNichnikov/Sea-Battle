@@ -16,6 +16,7 @@ class Game:
             new_map = Map(name=name, condition_player_map=condition_player_map, surface=self.surface,
                           list_json_file=list_json_file)
             self.list_maps.append(new_map)
+            return new_map
 
         # Подключение к серверу
         self.connect_server = ConnectServer(host='25.68.177.81', port=5000)  # player_id=player_id,
@@ -42,9 +43,9 @@ class Game:
         self.surface.fill(WHITE)
 
         # Создание карты игрока
-        create_map('Player', ConditionPlayerMap.Player, self.__open_json(path_json_player)['description'])
+        self.player_map = create_map('Player', ConditionPlayerMap.Player, self.__open_json(path_json_player)['description'])
         # Создание карты противника
-        create_map('Enemy', ConditionPlayerMap.Enemy)
+        self.enemy_map = create_map('Enemy', ConditionPlayerMap.Enemy)
         # Создание текста
         self.nickname_player_text = Text(self.surface, 'PLAYER', 40, BLUE_AZURE, True, path_font)
         self.nickname_enemy_text = Text(self.surface, 'ENEMY_258', 40, RED, True, path_font)
@@ -52,21 +53,25 @@ class Game:
     # Запуск функции в классе Map
     def start_function_map(self, condition_function_map, **kwargs):
         for select_map in self.list_maps:
-            if condition_function_map == ConditionFunctionMap.Draw_Map:
+            if condition_function_map == ConditionFunctionMap.DrawMap:
                 select_map.draw_map(self.condition_motion)
-            elif condition_function_map == ConditionFunctionMap.Check_Input_Mouse:
+            elif condition_function_map == ConditionFunctionMap.CheckInputMouse:
                 block = select_map.get_block_input_map(kwargs['position_mouse'])
-                if block is not None:
+                if block is not None and self.condition_motion == ConditionPlayerMap.Player:
                     # Отправка информации на сервер
                     self.connect_server.send({'player_id': self.player_id,
                                               'function': 'attack',
                                               'parameters': {'block': block.number_block}})
-                    # self.condition_motion = ConditionPlayerMap.Enemy
-            elif condition_function_map == ConditionFunctionMap.Destroy_Block and \
+                    self.condition_motion = ConditionPlayerMap.Enemy
+            elif condition_function_map == ConditionFunctionMap.HitBlock and \
                     select_map.condition_player_map == kwargs['condition_map']:
                 # self.condition_motion = ConditionPlayerMap.Player
                 block = select_map.get_block_using_position(kwargs['position_block'])
                 block.change_to_hit()
+            elif condition_function_map == ConditionFunctionMap.MissBlock \
+                    and select_map.condition_player_map == kwargs['condition_map']:
+                block = select_map.get_block_using_position(kwargs['position_block'])
+                block.change_to_miss()
 
     # Открытие json файла
     def __open_json(self, path_map) -> dict:
@@ -80,7 +85,7 @@ class Game:
             self.clock.tick(self.FPS)
 
             # Отрисовка карты
-            self.start_function_map(ConditionFunctionMap.Draw_Map)
+            self.start_function_map(ConditionFunctionMap.DrawMap)
 
             # Отрисовка текста
             self.nickname_player_text.draw_text(
@@ -98,23 +103,29 @@ class Game:
                     self.runner = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1:
-                        self.start_function_map(ConditionFunctionMap.Check_Input_Mouse, position_mouse=event.pos)
+                        self.start_function_map(ConditionFunctionMap.CheckInputMouse, position_mouse=event.pos)
                 elif event.type == pygame.MOUSEBUTTONUP:
                     pass
+                
             # Работа с сервером
             answer = self.connect_server.send({'player_id': self.player_id, 'get_info': True})
             if answer['function'] != 'processing':
                 if answer['function'] == 'attack':
-                    # self.condition_motion = ConditionPlayerMap.Player
+                    self.condition_motion = ConditionPlayerMap.Player
                     position_block = answer['parameters']['block']
-                    # print(f"Блок - {position_block} уничтожен")
-                    self.connect_server.send({'player_id': self.player_id, 'function': 'destroyed',
+                    block = self.player_map.get_block_using_position(position_block)
+                    function_block = block.check_condition_block()
+                    self.connect_server.send({'player_id': self.player_id, 'function': function_block,
                                               'parameters': {'block': position_block}})
-                    self.start_function_map(ConditionFunctionMap.Destroy_Block, position_block=position_block,
-                                            condition_map=ConditionPlayerMap.Player)
-                elif answer['function'] == 'destroyed':
+                    # self.start_function_map(ConditionFunctionMap.DestroyBlock, position_block=position_block,
+                    #                         condition_map=ConditionPlayerMap.Player)
+                elif answer['function'] == 'hit':
                     position_block = answer['parameters']['block']
-                    self.start_function_map(ConditionFunctionMap.Destroy_Block, position_block=position_block,
+                    self.start_function_map(ConditionFunctionMap.HitBlock, position_block=position_block,
+                                            condition_map=ConditionPlayerMap.Enemy)
+                elif answer['function'] == 'miss':
+                    position_block = answer['parameters']['block']
+                    self.start_function_map(ConditionFunctionMap.MissBlock, position_block=position_block,
                                             condition_map=ConditionPlayerMap.Enemy)
             pygame.display.flip()
         self.surface.fill(WHITE)

@@ -1,4 +1,4 @@
-from AllConditions import ConditionBlock
+from AllConditions import ConditionBlock, ConditionFunctionMap
 import pygame
 
 
@@ -12,7 +12,8 @@ class Point:
 class Block:
     """  Класс блока, используется для проверки, что в данный момент происходит с конкретным блоком """
 
-    def __init__(self, x, y, border_x, border_y, block_size, color_default, color_select, color_hit, color_lock) -> None:
+    def __init__(self, x, y, border_x, border_y, block_size, color_default, color_select, color_hit, color_miss,
+                 color_lock) -> None:
         # Позиция блока по оси X
         self.pos_x = x * block_size + border_x
         # Позиция блока по оси Y
@@ -35,6 +36,7 @@ class Block:
         self.color_select = color_select
         self.color_lock = color_lock
         self.color_hit = color_hit
+        self.color_miss = color_miss
 
         self.rect = pygame.Rect(self.pos_x, self.pos_y, self.block_size, self.block_size)
 
@@ -62,6 +64,10 @@ class Block:
     def change_to_hit(self) -> None:
         self.__change_condition_color(ConditionBlock.Hit, self.color_hit)
 
+    # Смена состояния блока на промах
+    def change_to_miss(self) -> None:
+        self.__change_condition_color(ConditionBlock.Miss, self.color_miss)
+
     # Смена состояния блока на выбранный
     def change_to_selected(self) -> None:
         self.__change_condition_color(ConditionBlock.Selected, self.color_select)
@@ -75,3 +81,16 @@ class Block:
     # Получение информации о блоке, для того, чтобы разукрасить
     def get_info_draw_block(self) -> dict:
         return {'color_selected': self.color_selected, 'position': self.rect, 'number_block': self.number_block}
+
+    # Проверка состояния блока
+    def check_condition_block(self):
+        function_block = {}
+        # По блоку попали
+        if self.condition_block == ConditionBlock.Selected:
+            function_block = 'hit'
+            self.change_to_hit()
+        # Промах
+        elif self.condition_block == ConditionBlock.Empty:
+            function_block = 'miss'
+            self.change_to_miss()
+        return function_block

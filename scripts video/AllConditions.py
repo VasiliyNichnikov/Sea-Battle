@@ -17,9 +17,11 @@ class ConditionMap(Enum):
 
 # Функция, которую нужно запустить у карты
 class ConditionFunctionMap(Enum):
-    Draw_Map = 0
-    Check_Input_Mouse = 1
-    Destroy_Block = 2
+    DrawMap = 0
+    CheckInputMouse = 1
+    DestroyBlock = 2
+    HitBlock = 3
+    MissBlock = 4
 
 
 # Состояние корабля
