@@ -108,8 +108,7 @@ class Map:
     # Получение блока по position блока
     def get_block_using_position(self, position):
         for block in self.list_blocks:
-            if block.number_block == tuple(position) and (block.condition_block == ConditionBlock.Selected
-                                                          or block.condition_block == ConditionBlock.Empty):
+            if block.number_block == tuple(position):
                 return block
         # Ошибка, такого не должно быть
         return None
@@ -120,6 +119,7 @@ class Map:
                 self.rect.bottomright[1] and self.condition_map != ConditionMap.Lock:
             # Проверка блока, на который нажали
             for block in self.list_blocks:
-                if block.check_input_block(mouse):
+                if block.check_input_block(mouse) and (block.condition_block == ConditionBlock.Selected
+                                                       or block.condition_block == ConditionBlock.Empty):
                     return block
         return None
