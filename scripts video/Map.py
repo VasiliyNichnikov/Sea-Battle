@@ -1,5 +1,5 @@
 from Block import Block
-from AllConditions import ConditionMap, ConditionPlayerMap
+from AllConditions import ConditionMap, ConditionPlayerMap, ConditionBlock
 from ColorsAndMainParameters import WHITE, BLACK, RED, GREEN, YANDEX_COLOR
 from ColorsAndMainParameters import number_blocks, block_size, border, distance_between_blocks, \
     distance_screen_up_maps, height, width, distance_between_maps
@@ -108,7 +108,8 @@ class Map:
     # Получение блока по position блока
     def get_block_using_position(self, position):
         for block in self.list_blocks:
-            if block.number_block == tuple(position):
+            if block.number_block == tuple(position) and (block.condition_block == ConditionBlock.Selected
+                                                          or block.condition_block == ConditionBlock.Empty):
                 return block
         # Ошибка, такого не должно быть
         return None

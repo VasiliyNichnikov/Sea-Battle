@@ -1,4 +1,4 @@
-from AllConditions import ConditionBlock, ConditionFunctionMap
+from AllConditions import ConditionBlock
 import pygame
 
 
