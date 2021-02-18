@@ -62,22 +62,48 @@ class Game:
                     self.connect_server.send({'player_id': self.player_id,
                                               'function': 'attack',
                                               'parameters': {'block': block.number_block}})
-                    self.condition_motion = ConditionPlayerMap.Enemy
-            elif condition_function_map == ConditionFunctionMap.HitBlock and \
-                    select_map.condition_player_map == kwargs['condition_map']:
-                # self.condition_motion = ConditionPlayerMap.Player
-                block = select_map.get_block_using_position(kwargs['position_block'])
-                block.change_to_hit()
-            elif condition_function_map == ConditionFunctionMap.MissBlock \
-                    and select_map.condition_player_map == kwargs['condition_map']:
-                block = select_map.get_block_using_position(kwargs['position_block'])
-                block.change_to_miss()
+                    # self.condition_motion = ConditionPlayerMap.Enemy
+            # elif condition_function_map == ConditionFunctionMap.HitBlock and \
+            #         select_map.condition_player_map == kwargs['condition_map']:
+            #     # self.condition_motion = ConditionPlayerMap.Player
+            #     block = select_map.get_block_using_position(kwargs['position_block'])
+            #     block.change_to_hit()
+            # elif condition_function_map == ConditionFunctionMap.MissBlock \
+            #         and select_map.condition_player_map == kwargs['condition_map']:
+            #     block = select_map.get_block_using_position(kwargs['position_block'])
+            #     block.change_to_miss()
 
     # Открытие json файла
     def __open_json(self, path_map) -> dict:
         with open(path_map, 'r', encoding='utf-8') as read_file:
             data = json.load(read_file)
         return data
+
+    # Проверяем сервер
+    def check_server(self) -> None:
+        # Ответ от сервера
+        answer = self.connect_server.send({'player_id': self.player_id, 'get_info': True})
+        if answer['function'] != 'processing':
+            # Позиция блока
+            position_block = answer['parameters']['block']
+            # Противник атакует игрока
+            if answer['function'] == 'attack':
+                # Получаем блок с карты противника
+                block = self.player_map.get_block_using_position(position_block)
+                function_block = block.check_condition_block()
+                if function_block['next_motion']:
+                    self.condition_motion = ConditionPlayerMap.Player
+                self.connect_server.send({'player_id': self.player_id, 'function': function_block['function'],
+                                          'parameters': {'block': position_block}})
+            # Игрок атакует противника
+            else:
+                # Получем блок с карты противника
+                block = self.enemy_map.get_block_using_position(position_block)
+                if answer['function'] == 'hit':
+                    block.change_to_hit()
+                elif answer['function'] == 'miss':
+                    self.condition_motion = ConditionPlayerMap.Enemy
+                    block.change_to_miss()
 
     # Запуск игры
     def start_game(self):
@@ -108,25 +134,8 @@ class Game:
                     pass
                 
             # Работа с сервером
-            answer = self.connect_server.send({'player_id': self.player_id, 'get_info': True})
-            if answer['function'] != 'processing':
-                if answer['function'] == 'attack':
-                    self.condition_motion = ConditionPlayerMap.Player
-                    position_block = answer['parameters']['block']
-                    block = self.player_map.get_block_using_position(position_block)
-                    function_block = block.check_condition_block()
-                    self.connect_server.send({'player_id': self.player_id, 'function': function_block,
-                                              'parameters': {'block': position_block}})
-                    # self.start_function_map(ConditionFunctionMap.DestroyBlock, position_block=position_block,
-                    #                         condition_map=ConditionPlayerMap.Player)
-                elif answer['function'] == 'hit':
-                    position_block = answer['parameters']['block']
-                    self.start_function_map(ConditionFunctionMap.HitBlock, position_block=position_block,
-                                            condition_map=ConditionPlayerMap.Enemy)
-                elif answer['function'] == 'miss':
-                    position_block = answer['parameters']['block']
-                    self.start_function_map(ConditionFunctionMap.MissBlock, position_block=position_block,
-                                            condition_map=ConditionPlayerMap.Enemy)
+            self.check_server()
+
             pygame.display.flip()
         self.surface.fill(WHITE)
 
