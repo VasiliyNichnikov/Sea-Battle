@@ -38,9 +38,11 @@ class Server:
                     # Если информация пришла от игрока 1
                     if info['player_id'] == self.player_id_1:
                         conn.sendall(json.dumps(self.save_dict_player_1).encode('utf-8'))
+                        self.save_dict_player_1 = {'function': 'processing'}
                     # Иначе, если информация пришла от игрока 2
                     elif info['player_id'] == self.player_id_2:
                         conn.sendall(json.dumps(self.save_dict_player_2).encode('utf-8'))
+                        self.save_dict_player_2 = {'function': 'processing'}
                 else:
                     # Если информация пришла от игрока 1
                     if info['player_id'] == self.player_id_1:
