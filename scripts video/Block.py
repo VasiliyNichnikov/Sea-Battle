@@ -87,10 +87,10 @@ class Block:
         function_block = {}
         # По блоку попали
         if self.condition_block == ConditionBlock.Selected:
-            function_block = 'hit'
+            function_block = {'function': 'hit', 'next_motion': False}
             self.change_to_hit()
         # Промах
         elif self.condition_block == ConditionBlock.Empty:
-            function_block = 'miss'
+            function_block = {'function': 'miss', 'next_motion': True}
             self.change_to_miss()
         return function_block
