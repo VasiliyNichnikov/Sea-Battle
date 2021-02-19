@@ -24,6 +24,8 @@ class Block:
         self.number_block = (x, y)
         # Длина корабля в котором находится данный блок
         self.len_ship_which_block_located = 0
+        # Класс корабля в котором находится блок
+        self.ship_class = None
 
         # Позиция точек блока
         self.pos_left_up = Point(self.pos_x, self.pos_y)
