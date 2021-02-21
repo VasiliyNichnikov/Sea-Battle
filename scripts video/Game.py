@@ -1,5 +1,5 @@
 from Map import Map
-from AllConditions import ConditionPlayerMap, ConditionFunctionMap
+from AllConditions import ConditionPlayerMap, ConditionFunctionMap, ConditionShip
 from TextAndButton import Text
 from ColorsAndMainParameters import WHITE, BLUE_AZURE, RED
 from ColorsAndMainParameters import height, width, distance_between_maps, border, distance_screen_up_maps, path_font, \
@@ -19,7 +19,7 @@ class Game:
             return new_map
 
         # Подключение к серверу
-        self.connect_server = ConnectServer(host='localhost', port=5555)
+        self.connect_server = ConnectServer(host='localhost', port=5555)  # player_id=player_id,
         self.player_id = self.connect_server.player_id
         self.first_motion = self.connect_server.first_motion
         # Кто из игроков сейчас ходит
@@ -91,6 +91,7 @@ class Game:
                     positions_blocks_ship = select_ship.get_positions_blocks()
                     if not condition_ship:
                         self.player_map.draw_ships_blocks(select_ship.list_blocks_ship)
+                        select_ship.condition_ship = ConditionShip.Destroyed
                         print('Корабль уничтожен, закрашиваем поле')
                 else:
                     # Должна быть ошибка
@@ -108,8 +109,10 @@ class Game:
                 if answer['function'] == 'hit':
                     block.change_to_hit()
                     if not answer['parameters']['ship_condition']:
-                        self.enemy_map.draw_ships_blocks([self.enemy_map.get_block_using_position(pos)
-                                                          for pos in answer['parameters']['positions_blocks_ship']])
+                        list_blocks = [self.enemy_map.get_block_using_position(pos)
+                                       for pos in answer['parameters']['positions_blocks_ship']]
+                        self.enemy_map.create_ship(list_blocks)
+                        self.enemy_map.draw_ships_blocks(list_blocks)
                         print('Корабль противника уничтожен,', answer['parameters']['positions_blocks_ship'])
 
                 elif answer['function'] == 'miss':

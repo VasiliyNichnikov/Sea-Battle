@@ -30,6 +30,12 @@ class ConditionShip(Enum):
     Destroyed = 1
 
 
+# Ось на которой расположен корабль
+class ConditionAxisShip(Enum):
+    Horizontal = 0
+    Vertical = 1
+
+
 # Состояние блока
 class ConditionBlock(Enum):
     Empty = 0
