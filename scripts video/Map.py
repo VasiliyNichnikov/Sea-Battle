@@ -1,6 +1,7 @@
 from Block import Block
+from Ship import Ship
 from AllConditions import ConditionMap, ConditionPlayerMap, ConditionBlock
-from ColorsAndMainParameters import WHITE, BLACK, RED, GREEN, YANDEX_COLOR, SEA_WATER
+from ColorsAndMainParameters import WHITE, BLACK, RED, GREEN, YANDEX_COLOR
 from ColorsAndMainParameters import number_blocks, block_size, border, distance_between_blocks, \
     distance_screen_up_maps, height, width, distance_between_maps
 import pygame
@@ -32,6 +33,8 @@ class Map:
         self.surface = surface
         # Список с блоками
         self.list_blocks = []
+        # Список с кораблями
+        self.list_ships = []
         self.rect = pygame.Rect(self.border_x, self.border_y, block_size * number_blocks, block_size * number_blocks)
 
         # Создание блоков
@@ -39,38 +42,39 @@ class Map:
 
         # Преобразование блоков из json файла
         if self.list_json_file is not None:
-            self.__convert_json_file()
+            self.__convert_json_file_and_search_ships()
             self.condition_map = ConditionMap.Lock
 
     # Преобразовать json файл блоков
-    def __convert_json_file(self):
+    def __convert_json_file_and_search_ships(self):
         for block in self.list_blocks:
             x, y = block.number_block
             if self.list_json_file[y][x] == '1':
                 block.change_to_selected()
             else:
                 block.change_to_empty()
+        self.__searching_ships()
 
     # Создание блоков
     def __create_blocks(self):
         for y in range(number_blocks):
             for x in range(number_blocks):
-                new_block = Block(
-                    surface=self.surface, x=x, y=y,
-                    border_x=self.border_x,
-                    border_y=self.border_y,
-                    block_size=block_size,
-                    color_select=BLACK,
-                    color_default=WHITE,
-                    color_hit=RED,
-                    color_miss=YANDEX_COLOR,
-                    color_lock=RED)
+                new_block = Block(x=x, y=y,
+                                  border_x=self.border_x,
+                                  border_y=self.border_y,
+                                  block_size=block_size,
+                                  color_select=BLACK,
+                                  color_default=WHITE,
+                                  color_hit=GREEN,
+                                  color_miss=YANDEX_COLOR,
+                                  color_lock=RED)
                 self.list_blocks.append(new_block)
 
     # Отрисовка карты
     def draw_map(self, condition_motion) -> None:
         for block in self.list_blocks:
-            block.draw_image_on_block()
+            parameters_block = block.get_info_draw_block()
+            pygame.draw.rect(self.surface, parameters_block['color_selected'], parameters_block['position'])
 
         color_frame = BLACK
         pos = block_size
@@ -99,11 +103,50 @@ class Map:
                 if condition_motion == ConditionPlayerMap.Enemy:
                     color_frame = RED
 
-            pygame.draw.line(self.surface, SEA_WATER, point_start_line_one, point_end_line_one, distance_between_blocks)
-            pygame.draw.line(self.surface, SEA_WATER, point_start_line_two, point_end_line_two, distance_between_blocks)
+            pygame.draw.line(self.surface, BLACK, point_start_line_one, point_end_line_one, distance_between_blocks)
+            pygame.draw.line(self.surface, BLACK, point_start_line_two, point_end_line_two, distance_between_blocks)
             pygame.draw.rect(self.surface, color_frame, position_frame, distance_between_blocks * 2)
 
             pos += block_size
+
+    # Поиск кораблей на карте
+    def __searching_ships(self):
+        for block in self.list_blocks:
+            if block.condition_block == ConditionBlock.Selected and not self.__check_block_ship(block):
+                new_ship = Ship(self.__search_nearest_blocks(block, []))
+                self.list_ships.append(new_ship)
+
+    # Поиск ближайших блоков, которые создают корабли
+    def __search_nearest_blocks(self, start_block, list_block_passed):
+        list_block_passed.append(start_block)
+        block_nearby_cross = self.__get_blocks_nearby(start_block, condition='cross')
+        for block in block_nearby_cross:
+            if block.condition_block == ConditionBlock.Selected and block != start_block and block not in list_block_passed:
+                self.__search_nearest_blocks(block, list_block_passed)
+        return list_block_passed
+
+    # Проверка, принадлежит ли блок одному из кораблей
+    def __check_block_ship(self, block):
+        for ship in self.list_ships:
+            if block in ship.list_blocks_ship:
+                return True
+        return False
+
+    # Получение угловых блоков
+    def __get_blocks_nearby(self, select_block, condition='corners'):
+        x, y = select_block.number_block
+        if condition == 'corners':
+            list_positions_blocks = [(x - 1, y - 1), (x - 1, y + 1), (x + 1, y - 1), (x + 1, y + 1)]
+        else:
+            list_positions_blocks = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
+        return [block for block in self.list_blocks if block.number_block in list_positions_blocks]
+
+    # Возвращает блоки вокруг выбранного блока
+    def __get_blocks_nearby_cross_and_corners(self, block, select_condition_block):
+        blocks_nearby_corners = self.__get_blocks_nearby(block, condition='corners')
+        blocks_nearby_cross = list(filter(lambda b: b.condition_block != select_condition_block,
+                                          self.__get_blocks_nearby(block, condition='cross')))
+        return {'corners': blocks_nearby_corners, 'cross': blocks_nearby_cross}
 
     # Получение блока по position блока
     def get_block_using_position(self, position):
@@ -113,6 +156,15 @@ class Map:
         # Ошибка, такого не должно быть
         return None
 
+    # Разукрашиваем блоки кораблей
+    def draw_ships_blocks(self, blocks):
+        for block in blocks:
+            blocks_cross_corners = self.__get_blocks_nearby_cross_and_corners(block, ConditionBlock.Hit)
+            blocks_corners = blocks_cross_corners['corners']
+            blocks_cross = blocks_cross_corners['cross']
+            for block_cross_and_corner in blocks_corners + blocks_cross:
+                block_cross_and_corner.change_to_lock(lock=True)
+
     # Возвращает блок на который нажал игрок
     def get_block_input_map(self, mouse):
         if self.rect.topleft[0] < mouse[0] < self.rect.bottomright[0] and self.rect.topleft[1] < mouse[1] < \
@@ -120,6 +172,7 @@ class Map:
             # Проверка блока, на который нажали
             for block in self.list_blocks:
                 if block.check_input_block(mouse) and (block.condition_block == ConditionBlock.Selected
-                                                       or block.condition_block == ConditionBlock.Empty):
+                                                       or block.condition_block == ConditionBlock.Empty) \
+                        and block.condition_block != ConditionBlock.Lock:
                     return block
         return None

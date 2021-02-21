@@ -43,7 +43,8 @@ class Game:
         self.surface.fill(WHITE)
 
         # Создание карты игрока
-        self.player_map = create_map('Player', ConditionPlayerMap.Player, self.__open_json(path_json_player)['description'])
+        self.player_map = create_map('Player', ConditionPlayerMap.Player,
+                                     self.__open_json(path_json_player)['description'])
         # Создание карты противника
         self.enemy_map = create_map('Enemy', ConditionPlayerMap.Enemy)
         # Создание текста
@@ -78,19 +79,39 @@ class Game:
             position_block = answer['parameters']['block']
             # Противник атакует игрока
             if answer['function'] == 'attack':
-                # Получаем блок с карты противника
+                # Получаем блок с карты игрока
                 block = self.player_map.get_block_using_position(position_block)
+                condition_ship = True
+                positions_blocks_ship = []
                 function_block = block.check_condition_block()
+
+                if block.ship_class is not None:
+                    select_ship = block.ship_class
+                    condition_ship = select_ship.check_condition_ship()
+                    positions_blocks_ship = select_ship.get_positions_blocks()
+                    if not condition_ship:
+                        self.player_map.draw_ships_blocks(select_ship.list_blocks_ship)
+                        print('Корабль уничтожен, закрашиваем поле')
+                else:
+                    # Должна быть ошибка
+                    pass
+
                 if function_block['next_motion']:
                     self.condition_motion = ConditionPlayerMap.Player
                 self.connect_server.send({'player_id': self.player_id, 'function': function_block['function'],
-                                          'parameters': {'block': position_block}})
+                                          'parameters': {'block': position_block, 'ship_condition': condition_ship,
+                                                         'positions_blocks_ship': positions_blocks_ship}})
             # Игрок атакует противника
             else:
                 # Получем блок с карты противника
                 block = self.enemy_map.get_block_using_position(position_block)
                 if answer['function'] == 'hit':
                     block.change_to_hit()
+                    if not answer['parameters']['ship_condition']:
+                        self.enemy_map.draw_ships_blocks([self.enemy_map.get_block_using_position(pos)
+                                                          for pos in answer['parameters']['positions_blocks_ship']])
+                        print('Корабль противника уничтожен,', answer['parameters']['positions_blocks_ship'])
+
                 elif answer['function'] == 'miss':
                     self.condition_motion = ConditionPlayerMap.Enemy
                     block.change_to_miss()
@@ -122,7 +143,7 @@ class Game:
                         self.start_function_map(ConditionFunctionMap.CheckInputMouse, position_mouse=event.pos)
                 elif event.type == pygame.MOUSEBUTTONUP:
                     pass
-                
+
             # Работа с сервером
             self.check_server()
 

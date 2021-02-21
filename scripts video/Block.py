@@ -28,6 +28,8 @@ class Block:
         self.number_block = (x, y)
         # Длина корабля в котором находится данный блок
         self.len_ship_which_block_located = 0
+        # Класс корабля в котором находится блок
+        self.ship_class = None
 
         # Спрайты кораблей
         self.sprite_ship_size_1 = load_image('../static/ships/ship1.png', size_x=block_size, size_y=block_size)
