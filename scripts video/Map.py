@@ -63,12 +63,7 @@ class Map:
                                   x=x, y=y,
                                   border_x=self.border_x,
                                   border_y=self.border_y,
-                                  block_size=block_size,
-                                  color_select=BLACK,
-                                  color_default=WHITE,
-                                  color_hit=GREEN,
-                                  color_miss=YANDEX_COLOR,
-                                  color_lock=RED)
+                                  block_size=block_size)
                 self.list_blocks.append(new_block)
 
     # Отрисовка карты

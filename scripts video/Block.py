@@ -13,9 +13,7 @@ class Point:
 class Block:
     """  Класс блока, используется для проверки, что в данный момент происходит с конкретным блоком """
 
-    def __init__(self, surface, x, y, border_x, border_y, block_size, color_default, color_select, color_hit,
-                 color_miss,
-                 color_lock) -> None:
+    def __init__(self, surface, x, y, border_x, border_y, block_size) -> None:
         # Поле для отрисовки блока
         self.surface = surface
         # Позиция блока по оси X
@@ -66,13 +64,6 @@ class Block:
         self.pos_left_down = Point(self.pos_x, self.pos_y + block_size)
         self.pos_right_down = Point(self.pos_x + block_size, self.pos_y + block_size)
 
-        # Цвета, которые может принимать блока
-        self.color_default = color_default
-        self.color_select = color_select
-        self.color_lock = color_lock
-        self.color_hit = color_hit
-        self.color_miss = color_miss
-
         self.rect = pygame.Rect(self.pos_x, self.pos_y, self.block_size, self.block_size)
 
         # Создание класса анимации воды
@@ -81,37 +72,33 @@ class Block:
         # Группа спрайтов анимации воды
         self.group_sprites_water = pygame.sprite.Group(self.water_animation)
 
-        # Цвет, который выбран в данный момент у блока
-        self.color_selected = self.color_default
         # Состояние блока
         self.condition_block = ConditionBlock.Empty
 
     # Смена состояния блока
-    def __change_condition_color(self, new_condition, new_color) -> None:
+    def __change_condition_color(self, new_condition) -> None:
         self.condition_block = new_condition
-        self.color_selected = new_color
 
     # Смена состояния блока на блокированное
     def change_to_lock(self, lock=False) -> None:
         if lock:
             self.condition_block = ConditionBlock.Lock
-        self.color_selected = self.color_lock
 
     # Смена состояния блока на пустое
     def change_to_empty(self) -> None:
-        self.__change_condition_color(ConditionBlock.Empty, self.color_default)
+        self.__change_condition_color(ConditionBlock.Empty)
 
     # Смена состояния блока на поврежденный
     def change_to_hit(self) -> None:
-        self.__change_condition_color(ConditionBlock.Hit, self.color_hit)
+        self.__change_condition_color(ConditionBlock.Hit)
 
     # Смена состояния блока на промах
     def change_to_miss(self) -> None:
-        self.__change_condition_color(ConditionBlock.Miss, self.color_miss)
+        self.__change_condition_color(ConditionBlock.Miss)
 
     # Смена состояния блока на выбранный
     def change_to_selected(self) -> None:
-        self.__change_condition_color(ConditionBlock.Selected, self.color_select)
+        self.__change_condition_color(ConditionBlock.Selected)
 
     # Проверка нажатия на блок
     def check_input_block(self, mouse) -> bool:
