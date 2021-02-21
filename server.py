@@ -52,8 +52,6 @@ class Server:
                         self.save_dict_player_1 = info
                     conn.sendall(json.dumps({'success': 'ok'}).encode('utf-8'))
 
-                # conn.sendall(json.dumps({'success': 'ok', 'function': 'selected'}).encode('utf-8'))
-
         print('Connection Closed')
         conn.close()
 
@@ -62,7 +60,7 @@ if __name__ == '__main__':
     server = Server(player_id_1='player_1', player_id_2='player_2')
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(('25.68.177.81', 5000))
+    sock.bind(('localhost', 5555))
     print('Waiting for a connection')
     sock.listen(2)
 

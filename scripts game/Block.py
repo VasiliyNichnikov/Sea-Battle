@@ -1,5 +1,4 @@
 from AllConditions import ConditionBlock
-from ImagesAndAnimations import AnimationWater, load_image
 import pygame
 
 
@@ -13,11 +12,8 @@ class Point:
 class Block:
     """  Класс блока, используется для проверки, что в данный момент происходит с конкретным блоком """
 
-    def __init__(self, surface, x, y, border_x, border_y, block_size, color_default, color_select, color_hit,
-                 color_miss,
+    def __init__(self, x, y, border_x, border_y, block_size, color_default, color_select, color_hit, color_miss,
                  color_lock) -> None:
-        # Поле для отрисовки блока
-        self.surface = surface
         # Позиция блока по оси X
         self.pos_x = x * block_size + border_x
         # Позиция блока по оси Y
@@ -28,9 +24,6 @@ class Block:
         self.number_block = (x, y)
         # Длина корабля в котором находится данный блок
         self.len_ship_which_block_located = 0
-
-        # Спрайты кораблей
-        self.sprite_ship_size_1 = load_image('../static/ships/ship1.png', size_x=block_size, size_y=block_size)
 
         # Позиция точек блока
         self.pos_left_up = Point(self.pos_x, self.pos_y)
@@ -46,12 +39,6 @@ class Block:
         self.color_miss = color_miss
 
         self.rect = pygame.Rect(self.pos_x, self.pos_y, self.block_size, self.block_size)
-
-        # Создание класса анимации воды
-        self.water_animation = AnimationWater(self.rect)
-
-        # Группа спрайтов анимации воды
-        self.group_sprites_water = pygame.sprite.Group(self.water_animation)
 
         # Цвет, который выбран в данный момент у блока
         self.color_selected = self.color_default
@@ -87,29 +74,14 @@ class Block:
 
     # Проверка нажатия на блок
     def check_input_block(self, mouse) -> bool:
-        if self.rect.topleft[0] < mouse[0] < self.rect.bottomright[0] and self.rect.topleft[1] < mouse[1] < \
-                self.rect.bottomright[1]:
+        if self.rect.topleft[0] < mouse[0] < self.rect.bottomright[0] \
+                and self.rect.topleft[1] < mouse[1] < self.rect.bottomright[1]:
             return True
         return False
 
-    # Отрисовка блоков на блоке
-    def draw_image_on_block(self):
-        self.group_sprites_water.update()
-        self.group_sprites_water.draw(self.surface)
-        # if self.condition_block == ConditionBlock.Empty:
-        #
-        # else:
-        if self.condition_block != ConditionBlock.Empty:
-            if self.len_ship_which_block_located == 1:
-                print('Ship 1')
-                self.surface.blit(self.sprite_ship_size_1, self.rect)
-            pygame.draw.rect(self.surface, self.color_selected, self.rect)
-        # self.surface.blit(self.water_sprite_1.get_image(), self.number_block)
-
     # Получение информации о блоке, для того, чтобы разукрасить
-    # def get_info_draw_block(self):
-    #     pass
-        # return {'color_selected': self.color_selected, 'position': self.rect, 'number_block': self.number_block}
+    def get_info_draw_block(self) -> dict:
+        return {'color_selected': self.color_selected, 'position': self.rect, 'number_block': self.number_block}
 
     # Проверка состояния блока
     def check_condition_block(self):

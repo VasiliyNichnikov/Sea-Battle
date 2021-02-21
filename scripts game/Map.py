@@ -1,6 +1,6 @@
 from Block import Block
 from AllConditions import ConditionMap, ConditionPlayerMap, ConditionBlock
-from ColorsAndMainParameters import WHITE, BLACK, RED, GREEN, YANDEX_COLOR, SEA_WATER
+from ColorsAndMainParameters import WHITE, BLACK, RED, YANDEX_COLOR
 from ColorsAndMainParameters import number_blocks, block_size, border, distance_between_blocks, \
     distance_screen_up_maps, height, width, distance_between_maps
 import pygame
@@ -55,22 +55,22 @@ class Map:
     def __create_blocks(self):
         for y in range(number_blocks):
             for x in range(number_blocks):
-                new_block = Block(
-                    surface=self.surface, x=x, y=y,
-                    border_x=self.border_x,
-                    border_y=self.border_y,
-                    block_size=block_size,
-                    color_select=BLACK,
-                    color_default=WHITE,
-                    color_hit=RED,
-                    color_miss=YANDEX_COLOR,
-                    color_lock=RED)
+                new_block = Block(x=x, y=y,
+                                  border_x=self.border_x,
+                                  border_y=self.border_y,
+                                  block_size=block_size,
+                                  color_select=BLACK,
+                                  color_default=WHITE,
+                                  color_hit=RED,
+                                  color_miss=YANDEX_COLOR,
+                                  color_lock=RED)
                 self.list_blocks.append(new_block)
 
     # Отрисовка карты
-    def draw_map(self, condition_motion) -> None:
+    def draw_map(self) -> None:
         for block in self.list_blocks:
-            block.draw_image_on_block()
+            parameters_block = block.get_info_draw_block()
+            pygame.draw.rect(self.surface, parameters_block['color_selected'], parameters_block['position'])
 
         color_frame = BLACK
         pos = block_size
@@ -81,9 +81,6 @@ class Map:
                 point_start_line_two, point_end_line_two = (pos + border, distance_screen_up_maps), (
                     pos + border, height + distance_screen_up_maps)
                 position_frame = (border, distance_screen_up_maps, height, width)
-
-                if condition_motion == ConditionPlayerMap.Player:
-                    color_frame = GREEN
 
             else:
                 point_start_line_one, point_end_line_one = (distance_between_maps + width,
@@ -96,11 +93,8 @@ class Map:
                                                                height + distance_screen_up_maps)
                 position_frame = (width + distance_between_maps, distance_screen_up_maps, width, height)
 
-                if condition_motion == ConditionPlayerMap.Enemy:
-                    color_frame = RED
-
-            pygame.draw.line(self.surface, SEA_WATER, point_start_line_one, point_end_line_one, distance_between_blocks)
-            pygame.draw.line(self.surface, SEA_WATER, point_start_line_two, point_end_line_two, distance_between_blocks)
+            pygame.draw.line(self.surface, BLACK, point_start_line_one, point_end_line_one, distance_between_blocks)
+            pygame.draw.line(self.surface, BLACK, point_start_line_two, point_end_line_two, distance_between_blocks)
             pygame.draw.rect(self.surface, color_frame, position_frame, distance_between_blocks * 2)
 
             pos += block_size
