@@ -2,13 +2,14 @@ import pygame
 from requests import Session
 import sys
 from colorsAndMainParameters import screen_height, screen_width, path_background_menu, FPS, size_field_top, \
-    block_lobby, distance_between_block_lobby, path_font
-from colorsAndMainParameters import WHITE, COLOR_TOP_BLOCK, GREEN, RED, YANDEX_COLOR
+    block_lobby, distance_between_block_lobby, path_font, path_block_lobby_not_pressed, path_text_selection, \
+    path_block_lobby_pressed
+from colorsAndMainParameters import WHITE, COLOR_TOP_BLOCK, COLOR_GRAY_BLOCK, RED, YANDEX_COLOR
 from textAndButton import Text
 from imagesAndAnimations import load_image
 
 
-class Menu:
+class Lobby:
     def __init__(self):
         self.FPS = FPS
 
@@ -43,33 +44,40 @@ class Menu:
 
             y = size_field_top + distance_between_block_lobby - (
                     block_lobby + distance_between_block_lobby) * self.select_number_block
+
             for lobby_index in range(len(self.list_lobbies)):
+                line_y = 0
                 # Создание текста лобби
-                name_lobby = Text(self.surface, self.list_lobbies[lobby_index]['name'], 30, COLOR_TOP_BLOCK, anti_aliasing=True,
+                name_lobby = Text(self.surface, self.list_lobbies[lobby_index]['name'], 30, COLOR_GRAY_BLOCK,
+                                  anti_aliasing=True,
                                   path_font=path_font)
-                color_circle = GREEN
-                color_block = WHITE
+                block_image = load_image(path_block_lobby_not_pressed, size_x=screen_width - 10, size_y=block_lobby,
+                                         select_size=False)
+                self.surface.blit(block_image, (distance_between_block_lobby, y))
 
                 if lobby_index == self.select_number_block:
-                    color_block = YANDEX_COLOR
+                    line_image_pressed = load_image(path_block_lobby_pressed, size_x=screen_width - 10, size_y=10,
+                                                    select_size=False)
+                    self.surface.blit(line_image_pressed, (distance_between_block_lobby, y + block_image.get_height()))
+                    line_y = line_image_pressed.get_height()
 
-                pygame.draw.rect(self.surface, color_block,
-                                 (distance_between_block_lobby, y,
-                                  screen_width - distance_between_block_lobby * 2, block_lobby))
+                text_selection_image = load_image(path_text_selection, size_x=name_lobby.text_obj.get_width(),
+                                                  size_y=name_lobby.text_obj.get_height(), select_size=False)
 
+                color_circle = (114, 166, 124)
                 if self.list_lobbies[lobby_index]['lock']:
-                    color_circle = RED
+                    color_circle = (166, 114, 124)
 
                 pygame.draw.circle(self.surface, color_circle,
-                                   (screen_width - distance_between_block_lobby * 5, y + block_lobby // 2),
+                                   (screen_width - distance_between_block_lobby * 7, y + block_lobby // 2),
                                    block_lobby // 4)
 
                 # Отрисовка названия лобби
+                self.surface.blit(text_selection_image,
+                                  (distance_between_block_lobby * 2, y + name_lobby.text_obj.get_height() // 2))
                 name_lobby.draw_text(
                     position=(distance_between_block_lobby * 2, y + name_lobby.text_obj.get_height() // 2))
-                # Отрисовка состояния лобби
-
-                y += block_lobby + distance_between_block_lobby
+                y += block_lobby + distance_between_block_lobby + line_y
             pygame.draw.rect(self.surface, COLOR_TOP_BLOCK, (0, 0, screen_width, size_field_top))
             # Events ---------------------------------------------------------------------------------------------------
             events = pygame.event.get()
@@ -88,5 +96,5 @@ class Menu:
 
 
 if __name__ == '__main__':
-    menu = Menu()
+    menu = Lobby()
     menu.start_menu()
