@@ -1,5 +1,5 @@
-from AllConditions import ConditionBlock, ConditionAxisShip, ConditionPlayerMap
-from ImagesAndAnimations import AnimationWater, load_image
+from allConditions import ConditionBlock, ConditionAxisShip, ConditionPlayerMap
+from imagesAndAnimations import AnimationWater, load_image
 import pygame
 
 
@@ -145,23 +145,6 @@ class Block:
         if angle != 0:
             sprite = pygame.transform.rotate(sprite, angle)
         self.surface.blit(sprite, position)
-
-        # self.surface.blit(, self.rect)
-
-        # if self.condition_block == ConditionBlock.Empty:
-        #
-        # else:
-        # if self.condition_block != ConditionBlock.Empty:
-        #     if self.len_ship_which_block_located == 1:
-        #         self.surface.blit(self.sprite_ship_size_1, self.rect)
-        #     else:
-        #         pygame.draw.rect(self.surface, self.color_selected, self.rect)
-        # self.surface.blit(self.water_sprite_1.get_image(), self.number_block)
-
-    # Получение информации о блоке, для того, чтобы разукрасить
-    # def get_info_draw_block(self):
-    #     pass
-    # return {'color_selected': self.color_selected, 'position': self.rect, 'number_block': self.number_block}
 
     # Проверка состояния блока
     def check_condition_block(self):

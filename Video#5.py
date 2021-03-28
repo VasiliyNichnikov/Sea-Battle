@@ -292,7 +292,7 @@ path_save_map = 'static/'
 # Список кораблей
 list_ships = []
 # Путь до шрифта
-path_font = 'Fonts/main_font.otf'
+path_font = 'fonts/main_font.otf'
 # Последний нажатый блок
 end_input_mouse_block = None
 # Кол-во готовых кораблей

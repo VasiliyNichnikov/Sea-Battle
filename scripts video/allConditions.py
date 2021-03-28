@@ -43,3 +43,11 @@ class ConditionBlock(Enum):
     Lock = 2
     Miss = 3
     Hit = 4
+
+
+# Состояние кнопок в меню
+class ConditionButton(Enum):
+    NONE = 0
+    Play = 1
+    Exit = 2
+

@@ -8,11 +8,23 @@ BLUE_AZURE = (42, 82, 190)
 GREEN = (0, 128, 0)
 YANDEX_COLOR = (255, 204, 0)
 SEA_WATER = (0, 102, 170)
+# Цвет блока в лобби
+COLOR_TOP_BLOCK = (103, 109, 122)
 
 
 # Основные параметры
 # Размеры карты
 height = width = 500
+# FPS
+FPS = 60
+# Размеры экраны
+screen_height, screen_width = 500, 800
+# Размер верхнего блока
+size_field_top = 50
+# Размер блока в лобби
+block_lobby = 60
+# Расстояние между блоками в лобби
+distance_between_block_lobby = 5
 # Расстояние между двумя картами
 distance_between_maps = 40
 # Расстояние между верхней точкой приложения и картой по оси y
@@ -26,6 +38,8 @@ distance_between_blocks = 2
 # Размер одного блока
 block_size = height // number_blocks
 # Путь до шрифта
-path_font = '../Fonts/main_font.otf'
+path_font = '../static/fonts/main_font.otf'
 # Путь до карты игрока в виде json файла
 path_json_player = '../static/map_player.json'
+# Путь до заднего фона меню
+path_background_menu = '../static/menu/background.png'
