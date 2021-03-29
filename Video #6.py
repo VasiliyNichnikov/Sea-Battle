@@ -167,8 +167,7 @@ def check_input_mouse(pos_mouse):
             change_block(block)
             break
 
-
-# Возвращает блоки вокруг блока
+# Возвращает блоки вокруг выбранного блока
 def get_blocks_nearby_cross_and_corners(block):
     blocks_nearby_corners = get_blocks_nearby(block, condition='corners')
     blocks_nearby_cross = list(filter(lambda b: b.condition_block != ConditionBlock.Selected,
