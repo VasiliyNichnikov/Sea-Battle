@@ -1,15 +1,18 @@
 import pygame
 import random
-from ColorsAndMainParameters import block_size
+from colorsAndMainParameters import block_size
 
 
-def load_image(path_sprite, size_x=0, size_y=0):
+def load_image(path_sprite, select_size=True, size_x=0, size_y=0):
     image = pygame.image.load(path_sprite)
     if size_x != 0 and size_y != 0:
-        image_size_x, image_size_y = image.get_width(), image.get_height()
-        ratio = min(float(size_x) / image_size_x, float(size_y) / image_size_y)
-        w = int(image_size_x * ratio)
-        h = int(image_size_y * ratio)
+        if select_size is False:
+            w, h = size_x, size_y
+        else:
+            image_size_x, image_size_y = image.get_width(), image.get_height()
+            ratio = min(float(size_x) / image_size_x, float(size_y) / image_size_y)
+            w = int(image_size_x * ratio)
+            h = int(image_size_y * ratio)
         image = pygame.transform.scale(image, (w, h))
     return image
 

@@ -1,4 +1,4 @@
-from AllConditions import ConditionShip, ConditionBlock, ConditionAxisShip
+from allConditions import ConditionShip, ConditionBlock, ConditionAxisShip
 
 """ Класс корабля, отвечает за каждый корабль в игре """
 

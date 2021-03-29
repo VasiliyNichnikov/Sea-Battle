@@ -1,10 +1,10 @@
-from Map import Map
-from AllConditions import ConditionPlayerMap, ConditionFunctionMap, ConditionShip
-from TextAndButton import Text
-from ColorsAndMainParameters import WHITE, BLUE_AZURE, RED
-from ColorsAndMainParameters import height, width, distance_between_maps, border, distance_screen_up_maps, path_font, \
-    path_json_player
-from ConnectServer import ConnectServer
+from map import Map
+from allConditions import ConditionPlayerMap, ConditionFunctionMap, ConditionShip
+from textAndButton import Text
+from colorsAndMainParameters import WHITE, BLUE_AZURE, RED
+from colorsAndMainParameters import height, width, distance_between_maps, border, distance_screen_up_maps, path_font, \
+    path_json_player, FPS
+from connectServer import ConnectServer
 import json
 import pygame
 
@@ -19,7 +19,7 @@ class Game:
             return new_map
 
         # Подключение к серверу
-        self.connect_server = ConnectServer(host='localhost', port=5555)  # player_id=player_id,
+        self.connect_server = ConnectServer(host='localhost', port=5000)  # player_id=player_id,
         self.player_id = self.connect_server.player_id
         self.first_motion = self.connect_server.first_motion
         # Кто из игроков сейчас ходит
@@ -28,7 +28,7 @@ class Game:
             self.condition_motion = ConditionPlayerMap.Enemy
 
         # Кол-во FPS
-        self.FPS = 60
+        self.FPS = FPS
         # Запущена игра или нет
         self.runner = True
         # Карты
@@ -38,6 +38,7 @@ class Game:
         pygame.init()
         self.surface = pygame.display.set_mode((width * 2 + distance_between_maps + border,
                                                 height + distance_screen_up_maps + border))
+        # print(width * 2 + distance_between_maps + border, height + distance_screen_up_maps + border)
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Sea Battle')
         self.surface.fill(WHITE)
@@ -129,13 +130,13 @@ class Game:
 
             # Отрисовка текста
             self.nickname_player_text.draw_text(
-                position=(border + width // 2 - self.nickname_player_text.text.get_width() // 2,
-                          distance_screen_up_maps // 2 - self.nickname_player_text.text.get_height() // 2 - border)
+                position=(border + width // 2 - self.nickname_player_text.text_obj.get_width() // 2,
+                          distance_screen_up_maps // 2 - self.nickname_player_text.text_obj.get_height() // 2 - border)
             )
             self.nickname_enemy_text.draw_text(
                 position=(
-                    border + width // 2 - self.nickname_enemy_text.text.get_width() // 2 + width + distance_between_maps,
-                    distance_screen_up_maps // 2 - self.nickname_enemy_text.text.get_height() // 2 - border)
+                    border + width // 2 - self.nickname_enemy_text.text_obj.get_width() // 2 + width + distance_between_maps,
+                    distance_screen_up_maps // 2 - self.nickname_enemy_text.text_obj.get_height() // 2 - border)
             )
             # Обработка событий
             for event in pygame.event.get():

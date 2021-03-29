@@ -302,7 +302,7 @@ number_finished_ships = 0
 list_ships = []
 list_selected_blocks = []
 list_remove_selected_blocks = []
-path_font = 'Fonts/main_font.otf'
+path_font = 'fonts/main_font.otf'
 
 # Цвета
 WHITE = (255, 255, 255)

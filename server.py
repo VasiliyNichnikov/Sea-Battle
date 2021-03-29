@@ -60,7 +60,7 @@ if __name__ == '__main__':
     server = Server(player_id_1='player_1', player_id_2='player_2')
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(('localhost', 5555))
+    sock.bind(('192.168.0.30', 5555))
     print('Waiting for a connection')
     sock.listen(2)
 

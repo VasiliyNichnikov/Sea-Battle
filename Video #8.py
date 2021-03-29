@@ -311,7 +311,7 @@ list_ships_enemy = []
 
 # Список выбранных блоков
 list_blocks_selected = []
-path_font = 'Fonts/main_font.otf'
+path_font = 'fonts/main_font.otf'
 
 # Цвета
 WHITE = (255, 255, 255)

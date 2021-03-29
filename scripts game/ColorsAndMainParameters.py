@@ -25,6 +25,6 @@ distance_between_blocks = 2
 # Размер одного блока
 block_size = height // number_blocks
 # Путь до шрифта
-path_font = '../Fonts/main_font.otf'
+path_font = '../fonts/main_font.otf'
 # Путь до карты игрока в виде json файла
 path_json_player = '../static/map_player.json'

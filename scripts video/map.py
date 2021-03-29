@@ -1,8 +1,8 @@
-from Block import Block
-from Ship import Ship
-from AllConditions import ConditionMap, ConditionPlayerMap, ConditionBlock
-from ColorsAndMainParameters import WHITE, BLACK, RED, GREEN, YANDEX_COLOR, SEA_WATER
-from ColorsAndMainParameters import number_blocks, block_size, border, distance_between_blocks, \
+from block import Block
+from ship import Ship
+from allConditions import ConditionMap, ConditionPlayerMap, ConditionBlock
+from colorsAndMainParameters import WHITE, BLACK, RED, GREEN, YANDEX_COLOR, SEA_WATER
+from colorsAndMainParameters import number_blocks, block_size, border, distance_between_blocks, \
     distance_screen_up_maps, height, width, distance_between_maps
 import pygame
 
