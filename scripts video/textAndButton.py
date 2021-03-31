@@ -10,7 +10,11 @@ class Text(object):
         self.font = pygame.font.Font(path_font, size_font)
         self.text = text
         self.anti_aliasing = anti_aliasing
+        self.color = color
         self.text_obj = self.font.render(self.text, self.anti_aliasing, color)
+
+    def change_text(self, new_text):
+        self.text_obj = self.font.render(new_text, self.anti_aliasing, self.color)
 
     # Отрисовка текста на экране
     def draw_text(self, position=(0, 0)) -> None:

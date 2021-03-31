@@ -4,7 +4,7 @@ import sys
 from colorsAndMainParameters import screen_height, screen_width, path_background_menu, FPS, size_field_top, \
     block_lobby, distance_between_block_lobby, path_font
 from colorsAndMainParameters import WHITE, COLOR_TOP_BLOCK, GREEN, RED, YANDEX_COLOR
-from textAndButton import Text
+from lobbyBlock import BlockLobby
 from imagesAndAnimations import load_image
 
 
@@ -31,9 +31,13 @@ class Menu:
         # Выбранный блок лобби
         self.select_number_block = 0
 
+        # Выбранный блок (класс)
+        self.select_block_class = None
+
         # Задний фон меню
         self.background_image = load_image(path_background_menu, size_x=screen_width,
                                            size_y=screen_height, select_size=False)
+        self.blocks_lobbies = [BlockLobby(self.surface, lobby['name'], lobby['lock']) for lobby in self.list_lobbies]
 
     def start_menu(self):
         while True:
@@ -43,33 +47,14 @@ class Menu:
 
             y = size_field_top + distance_between_block_lobby - (
                     block_lobby + distance_between_block_lobby) * self.select_number_block
-            for lobby_index in range(len(self.list_lobbies)):
-                # Создание текста лобби
-                name_lobby = Text(self.surface, self.list_lobbies[lobby_index]['name'], 30, COLOR_TOP_BLOCK, anti_aliasing=True,
-                                  path_font=path_font)
-                color_circle = GREEN
-                color_block = WHITE
-
+            for lobby_index in range(len(self.blocks_lobbies)):
+                select_block = False
                 if lobby_index == self.select_number_block:
-                    color_block = YANDEX_COLOR
-
-                pygame.draw.rect(self.surface, color_block,
-                                 (distance_between_block_lobby, y,
-                                  screen_width - distance_between_block_lobby * 2, block_lobby))
-
-                if self.list_lobbies[lobby_index]['lock']:
-                    color_circle = RED
-
-                pygame.draw.circle(self.surface, color_circle,
-                                   (screen_width - distance_between_block_lobby * 5, y + block_lobby // 2),
-                                   block_lobby // 4)
-
-                # Отрисовка названия лобби
-                name_lobby.draw_text(
-                    position=(distance_between_block_lobby * 2, y + name_lobby.text_obj.get_height() // 2))
-                # Отрисовка состояния лобби
-
+                    self.select_block_class = self.blocks_lobbies[lobby_index]
+                    select_block = True
+                self.blocks_lobbies[lobby_index].draw_block(y, select_block)
                 y += block_lobby + distance_between_block_lobby
+
             pygame.draw.rect(self.surface, COLOR_TOP_BLOCK, (0, 0, screen_width, size_field_top))
             # Events ---------------------------------------------------------------------------------------------------
             events = pygame.event.get()
@@ -78,9 +63,18 @@ class Menu:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_w and self.select_number_block - 1 >= 0:
+                    if event.key == pygame.K_RETURN:
+                        pass
+                        # print(self.password_text)
+                    elif event.key == pygame.K_BACKSPACE:
+                        print( self.select_block_class.password_text)
+                        self.select_block_class.password_text = self.select_block_class.password_text[:-1]
+                    elif len(self.select_block_class.password_text) + 1 <= 4:
+                        self.select_block_class.password_text += event.unicode
+
+                    if event.key == pygame.K_UP and self.select_number_block - 1 >= 0:
                         self.select_number_block -= 1
-                    if event.key == pygame.K_s and self.select_number_block + 1 < self.max_blocks:
+                    if event.key == pygame.K_DOWN and self.select_number_block + 1 < self.max_blocks:
                         self.select_number_block += 1
 
             self.clock.tick(FPS)
