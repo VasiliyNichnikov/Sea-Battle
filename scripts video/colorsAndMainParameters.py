@@ -46,8 +46,8 @@ path_json_player = '../static/map_player.json'
 # Путь до заднего фона меню
 path_background_menu = '../static/menu/background.png'
 # Путь до изображения блока лобби (не нажатого)
-path_block_lobby_not_pressed = '../static/lobby/lobby block (not pressed).png'
+path_block_lobby_not_selected = '../static/lobby/lobby block (not selected).png'
 # Путь до изображения блока лобби (нажатого)
-path_block_lobby_pressed = '../static/lobby/lobby block (pressed).png'
+path_block_lobby_pressed = '../static/lobby/lobby block (selected).png'
 # Путь до изображения выделения текста
 path_text_selection = '../static/lobby/text selection.png'
