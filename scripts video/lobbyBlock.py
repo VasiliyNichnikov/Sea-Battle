@@ -1,5 +1,5 @@
 import pygame
-from textAndButton import Text
+from textAndButtonAndInputPanel import Text
 from imagesAndAnimations import load_image
 from colorsAndMainParameters import screen_width, block_lobby, distance_between_block_lobby, \
     path_font, path_block_lobby_not_selected, path_text_selection, \

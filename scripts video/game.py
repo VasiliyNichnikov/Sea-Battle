@@ -1,6 +1,6 @@
 from map import Map
 from allConditions import ConditionPlayerMap, ConditionFunctionMap, ConditionShip
-from textAndButton import Text
+from textAndButtonAndInputPanel import Text
 from colorsAndMainParameters import WHITE, BLUE_AZURE, RED
 from colorsAndMainParameters import height, width, distance_between_maps, border, distance_screen_up_maps, path_font, \
     path_json_player, FPS
