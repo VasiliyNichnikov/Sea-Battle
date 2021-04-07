@@ -3,7 +3,7 @@ import sys
 from colorsAndMainParameters import screen_height, screen_width, path_background_menu, path_font, FPS
 from colorsAndMainParameters import SEA_WATER, WHITE, BLACK
 from imagesAndAnimations import load_image
-from textAndButton import SelectText, Text
+from textAndButtonAndInputPanel import SelectText, Text
 from allConditions import ConditionButton
 
 
