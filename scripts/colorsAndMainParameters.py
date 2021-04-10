@@ -24,7 +24,7 @@ screen_height, screen_width = 500, 800
 # Размер верхнего блока
 size_field_top = 50
 # Размер блока в лобби
-block_lobby = 60
+block_lobby_height = 70
 # Расстояние между блоками в лобби
 distance_between_block_lobby = 5
 # Расстояние между двумя картами
@@ -40,14 +40,14 @@ distance_between_blocks = 2
 # Размер одного блока
 block_size = height // number_blocks
 # Путь до шрифта
-path_font = '../static/fonts/main_font.otf'
+path_font = '../../static/fonts/main_font.otf'
 # Путь до карты игрока в виде json файла
 path_json_player = '../static/map_player.json'
 # Путь до заднего фона меню
-path_background_menu = '../static/menu/background.png'
+path_background_menu = '../../static/menu/background.png'
 # Путь до изображения блока лобби (не нажатого)
-path_block_lobby_not_selected = '../static/lobby/lobby block (not selected).png'
+path_block_lobby_not_selected = '../../static/lobby/lobby block (not selected).png'
 # Путь до изображения блока лобби (нажатого)
-path_block_lobby_pressed = '../static/lobby/lobby block (selected).png'
+path_block_lobby_pressed = '../../static/lobby/lobby block (selected).png'
 # Путь до изображения выделения текста
 path_text_selection = '../static/lobby/text selection.png'

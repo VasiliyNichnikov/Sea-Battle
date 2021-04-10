@@ -39,24 +39,24 @@ class Block:
         self.axis_block = None
 
         # Крест первый
-        self.sprite_cross_1 = load_image('../static/cross1.png', size_x=block_size, size_y=block_size)
+        self.sprite_cross_1 = load_image('../static/cross1.png', width=block_size, height=block_size)
 
         # Крест второй
-        self.sprite_cross_2 = load_image('../static/cross2.png', size_x=block_size, size_y=block_size)
+        self.sprite_cross_2 = load_image('../static/cross2.png', width=block_size, height=block_size)
 
         # Круг промаха
-        self.miss_circle = load_image('../static/miss_circle.png', size_x=block_size, size_y=block_size)
+        self.miss_circle = load_image('../static/miss_circle.png', width=block_size, height=block_size)
 
         # Блок одиночного корабля
-        self.sprite_block_ship_1 = load_image('../static/ships/ship_1.png', size_x=block_size, size_y=block_size)
+        self.sprite_block_ship_1 = load_image('../static/ships/ship_1.png', width=block_size, height=block_size)
         # Верхняя часть корабля
-        self.part_up_ships = load_image('../static/ships/part_up_ships.png', size_x=block_size, size_y=block_size)
+        self.part_up_ships = load_image('../static/ships/part_up_ships.png', width=block_size, height=block_size)
         # Средняя часть корабля
-        self.part_center_ships = load_image('../static/ships/part_center_ships.png', size_x=block_size,
-                                            size_y=block_size)
+        self.part_center_ships = load_image('../static/ships/part_center_ships.png', width=block_size,
+                                            height=block_size)
         # Нижняя часть корабля
         self.part_down_ships = load_image('../static/ships/part_down_ships.png',
-                                          size_x=block_size, size_y=block_size)
+                                          width=block_size, height=block_size)
 
         # Позиция точек блока
         self.pos_left_up = Point(self.pos_x, self.pos_y)

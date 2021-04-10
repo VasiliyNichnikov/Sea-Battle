@@ -18,8 +18,8 @@ class Menu:
         self.surface.fill(WHITE)
 
         # Задний фон меню
-        self.background_image = load_image(path_background_menu, size_x=screen_width,
-                                           size_y=screen_height, select_size=False)
+        self.background_image = load_image(path_background_menu, width=screen_width,
+                                           height=screen_height, proportionately=False)
 
         # Вход в лобби
         self.play_btn = SelectText(self.surface, 'PLAY', 70, anti_aliasing=True, path_font=path_font,
@@ -52,7 +52,7 @@ class Menu:
             self.surface.fill(WHITE)
             self.surface.blit(self.background_image, (0, 0))
             # Текст, "Название игры"
-            self.name_game_text.draw_text((screen_width // 2 - self.name_game_text.text_obj.get_width() // 2, 5))
+            self.name_game_text.draw_text((screen_width // 2 - self.name_game_text.__object.get_width() // 2, 5))
             # Кнопка, "Зайти в лобби"
             self.play_btn.draw_text((screen_width // 2 - self.play_btn.text_obj.get_width() // 2,
                                      screen_height // 2 - self.play_btn.text_obj.get_height() // 2))

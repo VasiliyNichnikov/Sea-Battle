@@ -1,24 +1,7 @@
 import pygame
 import random
-from colorsAndMainParameters import block_size
-
-
-def load_image(path_sprite, select_size=True, size_x=0, size_y=0):
-    image = pygame.image.load(path_sprite)
-    w, h = size_x, size_y
-    if size_x != 0 and size_y != 0 and select_size:
-        image_size_x, image_size_y = image.get_width(), image.get_height()
-        ratio = min(float(size_x) / image_size_x, float(size_y) / image_size_y)
-        w = int(image_size_x * ratio)
-        h = int(image_size_y * ratio)
-
-    if size_x == 0:
-        w = image.get_width()
-    if size_y == 0:
-        h = image.get_height()
-
-    image = pygame.transform.scale(image, (w, h))
-    return image
+from scripts.images.load_image import load_image
+from scripts.colorsAndMainParameters import block_size
 
 
 # Анимация воды
@@ -31,8 +14,8 @@ class AnimationWater(pygame.sprite.Sprite):
         self.water_2_path = '../static/waters/water2.png'
 
         # Создание спрайтов воды
-        water_sprite_1 = load_image(self.water_1_path, size_x=block_size, size_y=block_size)
-        water_sprite_2 = load_image(self.water_2_path, size_x=block_size, size_y=block_size)
+        water_sprite_1 = load_image(self.water_1_path, width=block_size, height=block_size)
+        water_sprite_2 = load_image(self.water_2_path, width=block_size, height=block_size)
         self.images = [water_sprite_1, water_sprite_2]
 
         self.slowing_down = 100

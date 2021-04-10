@@ -130,13 +130,13 @@ class Game:
 
             # Отрисовка текста
             self.nickname_player_text.draw_text(
-                position=(border + width // 2 - self.nickname_player_text.text_obj.get_width() // 2,
-                          distance_screen_up_maps // 2 - self.nickname_player_text.text_obj.get_height() // 2 - border)
+                position=(border + width // 2 - self.nickname_player_text.__object.get_width() // 2,
+                          distance_screen_up_maps // 2 - self.nickname_player_text.__object.get_height() // 2 - border)
             )
             self.nickname_enemy_text.draw_text(
                 position=(
-                    border + width // 2 - self.nickname_enemy_text.text_obj.get_width() // 2 + width + distance_between_maps,
-                    distance_screen_up_maps // 2 - self.nickname_enemy_text.text_obj.get_height() // 2 - border)
+                    border + width // 2 - self.nickname_enemy_text.__object.get_width() // 2 + width + distance_between_maps,
+                    distance_screen_up_maps // 2 - self.nickname_enemy_text.__object.get_height() // 2 - border)
             )
             # Обработка событий
             for event in pygame.event.get():

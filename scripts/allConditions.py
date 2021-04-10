@@ -50,4 +50,3 @@ class ConditionButton(Enum):
     NONE = 0
     Play = 1
     Exit = 2
-
