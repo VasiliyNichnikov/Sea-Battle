@@ -2,15 +2,17 @@ import pygame
 from pygame import Surface
 from scripts.position.positioning_operation import PositionAndSize, SelectPositioning
 from scripts.texts.text import Text
+# Прямоугольник
+from scripts.draw_objects.rectangle import Rectangle
 # Изображения
 from scripts.images.image import Image
 # Дополнительные параметры
-from scripts.lobby.lobbyParameters import HEIGHT_SCREEN, WIDTH_SCREEN, BACKGROUND_BLOCK, BACKGROUND_BLOCK_LINE
+from scripts.lobby.lobbyParameters import BACKGROUND_BLOCK_LINE
 from scripts.main.mainParameters import DEFAULT_PATH_FONT
-from scripts.colorsParameters import WHITE, COLOR_GRAY_BLOCK
+from scripts.colorsParameters import WHITE, COLOR_GRAY_BLOCK, COLOR_BLOCK
 
 """
-    Создание лобби блока
+    Создание блока лобби 
 """
 
 
@@ -18,7 +20,6 @@ class LobbyBlock:
     def __init__(self, surface: Surface, name: str, index: int, parent: PositionAndSize,
                  selected_positioning: SelectPositioning,
                  height: int, width: int, shift_x: int = 0, shift_y: int = 0, lock: bool = False) -> None:
-        # super().__init__(parent, selected_positioning, height, width, shift_x, shift_y)
         self.__surface = surface
         self.__parent = parent
         self.__selected_positioning = selected_positioning
@@ -43,8 +44,11 @@ class LobbyBlock:
         #                                              height=self.height,
         #                                              proportionately=False)
 
-        self.__background = Image(self.__surface, BACKGROUND_BLOCK, self.__parent,
-                                  self.__selected_positioning, height, width, shift_x, shift_y)
+        # Image(self.__surface, BACKGROUND_BLOCK, self.__parent,
+        #       self.__selected_positioning, height, width, shift_x, shift_y)
+
+        self.__background = Rectangle(self.__surface, self.__parent, self.__selected_positioning,
+                                      height, width, shift_x, shift_y, color=COLOR_BLOCK)
 
         # Создание текста лобби
         self.__name = Text(surface=self.__surface, text=name, size_font=30, color=WHITE, path_font=DEFAULT_PATH_FONT,

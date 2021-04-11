@@ -12,7 +12,7 @@ from scripts.images.image import Image
 # Дополнительные параметры
 from scripts.colorsParameters import WHITE
 from scripts.main.mainParameters import FPS, BACKGROUND_MENU_LOBBY
-from scripts.lobby.lobbyParameters import HEIGHT_BLOCK, DISTANCE_BETWEEN_BLOCKS
+from scripts.lobby.lobbyParameters import HEIGHT_BLOCK, DISTANCE_BETWEEN_BLOCKS, ANIMATION_SPEED
 
 
 class Lobby(PositioningOperation):
@@ -114,8 +114,17 @@ class Lobby(PositioningOperation):
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     pass
-                if event.type == pygame.MOUSEWHEEL:
-                    print('Прокрутка колесика мыши')
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 4:
+                        self.parent_blocks_lobbies.move(shift_y=ANIMATION_SPEED)
+                        # print("Прокручивание вперед")
+                    elif event.button == 5:
+                        self.parent_blocks_lobbies.move(shift_y=-ANIMATION_SPEED)
+                        # print("Прокручивание назад")
+                        # self.parent_blocks_lobbies.move(shift_y=self.parent_blocks_lobbies.y - 0.1)
+
+                # if event.type == pygame.MOUSEWHEEL:
+                #     print('Прокрутка колесика мыши')
                 #     if not self.creating_lobby.draw_block:
                 #         if self.list_objects_lobbies[self.select_number_block].lock:
                 #             block = self.list_objects_lobbies[self.select_number_block]
