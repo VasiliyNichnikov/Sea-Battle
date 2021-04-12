@@ -40,7 +40,6 @@ class Lobby(PositioningOperation):
 
             self.__initializing_blocks(values)
             self.__length_height_blocks = (HEIGHT_BLOCK + DISTANCE_BETWEEN_BLOCKS) * (self.__max_blocks + 1)
-            # print(self.__length_height_blocks)
             if self.__length_height_blocks > HEIGHT_SCREEN:
                 self.__movement_block = True
 
@@ -82,13 +81,13 @@ class Lobby(PositioningOperation):
                        lock=values['list_lobbies'][lobby_index]['lock'], selected_positioning=SelectPositioning.up)
             for lobby_index in range(self.__max_blocks)]
         # Выбранный блок лобби (номер)
-        self.select_number_block = 0
+        # self.select_number_block = 0
 
     def start_lobby(self):
         while True:
             # Background -----------------------------------------------------------------------------------------------
             self.background.draw()
-            self.parent_blocks_lobbies.draw()
+            # self.parent_blocks_lobbies.draw()
 
             for block_lobby in self.__blocks:
                 block_lobby.draw()

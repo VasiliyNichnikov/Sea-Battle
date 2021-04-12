@@ -7,7 +7,8 @@ from scripts.draw_objects.rectangle import Rectangle
 # Изображения
 from scripts.images.image import Image
 # Дополнительные параметры
-from scripts.lobby.lobbyParameters import BACKGROUND_BLOCK_LINE, BACKGROUND_NAME
+from scripts.lobby.lobbyParameters import BACKGROUND_BLOCK_LINE, BACKGROUND_NAME, HEIGHT_LINE, \
+    DISTANCE_BETWEEN_BLOCK_AND_TEXT
 from scripts.main.mainParameters import DEFAULT_PATH_FONT
 from scripts.colorsParameters import WHITE, COLOR_GRAY_BLOCK, COLOR_BLOCK
 
@@ -53,18 +54,17 @@ class LobbyBlock:
         # Имя лобби
         self.__name = Text(surface=self.__surface, text=name, size_font=30, color=WHITE, path_font=DEFAULT_PATH_FONT,
                            parent=self.__background, selected_positioning=SelectPositioning.left, anti_aliasing=True,
-                           shift_x=10)
+                           shift_x=DISTANCE_BETWEEN_BLOCK_AND_TEXT, shift_y=-HEIGHT_LINE // 2)
 
         # Задний фон текста
         self.__background_name = Image(surface=self.__surface,
                                        parent=self.__name,
                                        selected_positioning=SelectPositioning.center,
                                        height=self.__name.height,
-                                       width= self.__name.width, path=BACKGROUND_NAME)
+                                       width=self.__name.width, path=BACKGROUND_NAME)
 
-        # Линия, которая отрисовывается, если блок выбран
         self.__line = Image(self.__surface, BACKGROUND_BLOCK_LINE, self.__background, SelectPositioning.down,
-                            height=10, width=self.__background.width)
+                            height=HEIGHT_LINE, width=self.__background.width)
         # load_image(path_block_lobby_not_selected, width=self.width, height=10,
         #                                        proportionately=False)
         #
