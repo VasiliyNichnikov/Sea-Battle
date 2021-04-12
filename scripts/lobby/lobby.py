@@ -10,9 +10,10 @@ from scripts.position.positioning_operation import PositioningOperation, Positio
 # Изображения
 from scripts.images.image import Image
 # Дополнительные параметры
-from scripts.colorsParameters import WHITE
+from scripts.colorsParameters import WHITE, COLOR_TOP_BLOCK
 from scripts.main.mainParameters import FPS, BACKGROUND_MENU_LOBBY
-from scripts.lobby.lobbyParameters import HEIGHT_BLOCK, DISTANCE_BETWEEN_BLOCKS, ANIMATION_SPEED
+from scripts.lobby.lobbyParameters import HEIGHT_BLOCK, WIDTH_BLOCK, \
+    DISTANCE_BETWEEN_BLOCKS, ANIMATION_SPEED, HEIGHT_SCREEN, WIDTH_SCREEN
 
 
 class Lobby(PositioningOperation):
@@ -25,18 +26,23 @@ class Lobby(PositioningOperation):
         self.background = Image(surface=self.surface, path=BACKGROUND_MENU_LOBBY, parent=self,
                                 selected_positioning=SelectPositioning.center,
                                 height=self.height, width=self.width)
+        self.__movement_block = False
 
         if condition:
             # Максимальное кол-во блоков лобби
-            self.max_blocks = len(values['list_lobbies'])
+            self.__max_blocks = len(values['list_lobbies'])
 
             self.parent_blocks_lobbies = Empty(surface=self.surface, parent=self,
                                                selected_positioning=SelectPositioning.up,
-                                               width=self.width - 10,
-                                               height=(HEIGHT_BLOCK + DISTANCE_BETWEEN_BLOCKS) * self.max_blocks,
+                                               width=WIDTH_BLOCK,
+                                               height=(HEIGHT_BLOCK + DISTANCE_BETWEEN_BLOCKS) * self.__max_blocks,
                                                shift_y=HEIGHT_BLOCK, outline=2)
 
             self.__initializing_blocks(values)
+            self.__length_height_blocks = (HEIGHT_BLOCK + DISTANCE_BETWEEN_BLOCKS) * (self.__max_blocks + 1)
+            # print(self.__length_height_blocks)
+            if self.__length_height_blocks > HEIGHT_SCREEN:
+                self.__movement_block = True
 
         # Создание кнопки, которая отвечает за создание сервера
         # self.button_create_server = Button(self.surface, 2, 2, (0, 0, 0), 'Создать сервер', (255, 255, 255),
@@ -68,13 +74,13 @@ class Lobby(PositioningOperation):
         return False, None
 
     def __initializing_blocks(self, values):
-        self.blocks_lobby = [
+        self.__blocks = [
             LobbyBlock(surface=self.surface, name=values['list_lobbies'][lobby_index]['name'], index=lobby_index,
                        parent=self.parent_blocks_lobbies, width=self.parent_blocks_lobbies.width,
                        height=HEIGHT_BLOCK,
-                       shift_y=HEIGHT_BLOCK * lobby_index + DISTANCE_BETWEEN_BLOCKS * lobby_index,
+                       shift_y=(HEIGHT_BLOCK + DISTANCE_BETWEEN_BLOCKS) * lobby_index,
                        lock=values['list_lobbies'][lobby_index]['lock'], selected_positioning=SelectPositioning.up)
-            for lobby_index in range(self.max_blocks)]
+            for lobby_index in range(self.__max_blocks)]
         # Выбранный блок лобби (номер)
         self.select_number_block = 0
 
@@ -84,11 +90,7 @@ class Lobby(PositioningOperation):
             self.background.draw()
             self.parent_blocks_lobbies.draw()
 
-            # Отрисовка блоков
-            # y = size_field_top + distance_between_block_lobby - (
-            #         block_lobby + distance_between_block_lobby) * self.select_number_block
-
-            for block_lobby in self.blocks_lobby:
+            for block_lobby in self.__blocks:
                 block_lobby.draw()
 
             # for lobby in self.list_objects_lobbies:
@@ -99,7 +101,7 @@ class Lobby(PositioningOperation):
             #         line_y = 10
             #     lobby.draw_block(y, block_select)
             #     y += block_lobby + distance_between_block_lobby + line_y
-            # pygame.draw.rect(self.surface, COLOR_TOP_BLOCK, (0, 0, screen_width, size_field_top))
+            pygame.draw.rect(self.surface, COLOR_TOP_BLOCK, (0, 0, WIDTH_SCREEN, HEIGHT_BLOCK - DISTANCE_BETWEEN_BLOCKS))
             # self.button_create_server.draw_button(screen_width - self.button_create_server.width - 5,
             #                                       size_field_top // 2 - self.button_create_server.height // 2)
             # Отрисовка создания лобби
@@ -115,13 +117,11 @@ class Lobby(PositioningOperation):
                 if event.type == pygame.KEYDOWN:
                     pass
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 4:
-                        self.parent_blocks_lobbies.move(shift_y=ANIMATION_SPEED)
-                        # print("Прокручивание вперед")
-                    elif event.button == 5:
-                        self.parent_blocks_lobbies.move(shift_y=-ANIMATION_SPEED)
-                        # print("Прокручивание назад")
-                        # self.parent_blocks_lobbies.move(shift_y=self.parent_blocks_lobbies.y - 0.1)
+                    if self.__movement_block:
+                        if event.button == 4 and self.__blocks[0].y < 70:
+                            self.parent_blocks_lobbies.move(shift_y=ANIMATION_SPEED)
+                        elif event.button == 5 and self.__blocks[-1].y > 420:
+                            self.parent_blocks_lobbies.move(shift_y=-ANIMATION_SPEED)
 
                 # if event.type == pygame.MOUSEWHEEL:
                 #     print('Прокрутка колесика мыши')

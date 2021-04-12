@@ -7,7 +7,7 @@ from scripts.draw_objects.rectangle import Rectangle
 # Изображения
 from scripts.images.image import Image
 # Дополнительные параметры
-from scripts.lobby.lobbyParameters import BACKGROUND_BLOCK_LINE
+from scripts.lobby.lobbyParameters import BACKGROUND_BLOCK_LINE, BACKGROUND_NAME
 from scripts.main.mainParameters import DEFAULT_PATH_FONT
 from scripts.colorsParameters import WHITE, COLOR_GRAY_BLOCK, COLOR_BLOCK
 
@@ -50,9 +50,17 @@ class LobbyBlock:
         self.__background = Rectangle(self.__surface, self.__parent, self.__selected_positioning,
                                       height, width, shift_x, shift_y, color=COLOR_BLOCK)
 
-        # Создание текста лобби
+        # Имя лобби
         self.__name = Text(surface=self.__surface, text=name, size_font=30, color=WHITE, path_font=DEFAULT_PATH_FONT,
-                           parent=self.__background, selected_positioning=SelectPositioning.left, anti_aliasing=True)
+                           parent=self.__background, selected_positioning=SelectPositioning.left, anti_aliasing=True,
+                           shift_x=10)
+
+        # Задний фон текста
+        self.__background_name = Image(surface=self.__surface,
+                                       parent=self.__name,
+                                       selected_positioning=SelectPositioning.center,
+                                       height=self.__name.height,
+                                       width= self.__name.width, path=BACKGROUND_NAME)
 
         # Линия, которая отрисовывается, если блок выбран
         self.__line = Image(self.__surface, BACKGROUND_BLOCK_LINE, self.__background, SelectPositioning.down,
@@ -86,10 +94,19 @@ class LobbyBlock:
     def lock(self):
         return self.__lock
 
+    @property
+    def x(self):
+        return self.__background.x
+
+    @property
+    def y(self):
+        return self.__background.y
+
     # Отрисовка блока
     def draw(self) -> None:
         self.__background.draw()
         self.__line.draw()
+        self.__background_name.draw()
         self.__name.draw()
         # self.__surface.blit(self.__block_image_not_selected, (distance_between_block_lobby, y))
         #

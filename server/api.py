@@ -13,4 +13,11 @@ def getting_lobbies():
     return jsonify({'condition': 'success', 'list_lobbies': [{'name': 'Game', 'id': 'df34ff', 'lock': False},
                                                              {'name': 'Все ко мне', 'id': 'f34asdf', 'lock': True},
                                                              {'name': 'Game2', 'id': 'df3asm4ff', 'lock': False},
-                                                             {'name': 'Game3', 'id': 'hello', 'lock': False}]})
+                                                             {'name': 'Game3', 'id': 'hello', 'lock': False},
+                                                             {'name': 'Game4', 'id': 'world', 'lock': True},
+                                                             {'name': 'Game5', 'id': 'world2', 'lock': False},
+                                                             {'name': 'Game6', 'id': 'hefdf', 'lock': True},
+                                                             {'name': 'Game7', 'id': 'world2', 'lock': False},
+                                                             {'name': 'Game8', 'id': 'world2', 'lock': False},
+                                                             {'name': 'Game9', 'id': 'world2', 'lock': False},
+                                                             {'name': 'Game10', 'id': 'world2', 'lock': False}]})
