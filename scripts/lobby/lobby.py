@@ -87,20 +87,12 @@ class Lobby(PositioningOperation):
         while True:
             # Background -----------------------------------------------------------------------------------------------
             self.background.draw()
-            # self.parent_blocks_lobbies.draw()
 
             for block_lobby in self.__blocks:
                 block_lobby.draw()
 
-            # for lobby in self.list_objects_lobbies:
-            #     line_y = 0
-            #     block_select = False
-            #     if self.select_number_block == lobby.get_index():
-            #         block_select = True
-            #         line_y = 10
-            #     lobby.draw_block(y, block_select)
-            #     y += block_lobby + distance_between_block_lobby + line_y
-            pygame.draw.rect(self.surface, COLOR_TOP_BLOCK, (0, 0, WIDTH_SCREEN, HEIGHT_BLOCK - DISTANCE_BETWEEN_BLOCKS))
+            pygame.draw.rect(self.surface, COLOR_TOP_BLOCK,
+                             (0, 0, WIDTH_SCREEN, HEIGHT_BLOCK - DISTANCE_BETWEEN_BLOCKS))
             # self.button_create_server.draw_button(screen_width - self.button_create_server.width - 5,
             #                                       size_field_top // 2 - self.button_create_server.height // 2)
             # Отрисовка создания лобби
