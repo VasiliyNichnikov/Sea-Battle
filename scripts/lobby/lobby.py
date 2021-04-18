@@ -113,6 +113,13 @@ class Lobby(PositioningOperation):
                             self.parent_blocks_lobbies.move(shift_y=ANIMATION_SPEED)
                         elif event.button == 5 and self.__blocks[-1].y > 420:
                             self.parent_blocks_lobbies.move(shift_y=-ANIMATION_SPEED)
+                    if event.button == 1:
+                        for block in self.__blocks:
+                            block.checking_clicks(event.pos, True)
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if event.button == 1:
+                        for block in self.__blocks:
+                            block.checking_clicks(event.pos)
 
                 # if event.type == pygame.MOUSEWHEEL:
                 #     print('Прокрутка колесика мыши')

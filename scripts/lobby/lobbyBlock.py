@@ -6,11 +6,13 @@ from scripts.texts.text import Text
 from scripts.draw_objects.rectangle import Rectangle
 # Изображения
 from scripts.images.image import Image
+# Кнопки
+from scripts.buttons.default import ButtonDefault
 # Дополнительные параметры
 from scripts.lobby.lobbyParameters import BACKGROUND_BLOCK_LINE, BACKGROUND_NAME, HEIGHT_LINE, \
-    DISTANCE_BETWEEN_BLOCK_AND_TEXT
+    DISTANCE_BETWEEN_BLOCK_AND_TEXT, SIZE_FONT
 from scripts.main.mainParameters import DEFAULT_PATH_FONT
-from scripts.colorsParameters import WHITE, COLOR_GRAY_BLOCK, COLOR_BLOCK
+from scripts.colorsParameters import WHITE, COLOR_GRAY_BLOCK, COLOR_BLOCK, COLOR_TEXT_LOBBY
 
 """
     Создание блока лобби 
@@ -36,7 +38,8 @@ class LobbyBlock:
 
         # Создание текста, пароль, который ввел пользователь
         # self.__password = Text(self.__surface, self.__text_password, 30, WHITE, anti_aliasing=True, path_font=path_font)
-        self.__password = Text(surface=self.__surface, text=self.__text_password, size_font=30, color=COLOR_GRAY_BLOCK,
+        self.__password = Text(surface=self.__surface, text=self.__text_password, size_font=SIZE_FONT,
+                               color=COLOR_GRAY_BLOCK,
                                path_font=DEFAULT_PATH_FONT,
                                parent=self.__parent, selected_positioning=SelectPositioning.left, anti_aliasing=True)
 
@@ -52,7 +55,8 @@ class LobbyBlock:
                                       height, width, shift_x, shift_y, color=COLOR_BLOCK)
 
         # Имя лобби
-        self.__name = Text(surface=self.__surface, text=name, size_font=30, color=WHITE, path_font=DEFAULT_PATH_FONT,
+        self.__name = Text(surface=self.__surface, text=name, size_font=SIZE_FONT, color=WHITE,
+                           path_font=DEFAULT_PATH_FONT,
                            parent=self.__background, selected_positioning=SelectPositioning.left, anti_aliasing=True,
                            shift_x=DISTANCE_BETWEEN_BLOCK_AND_TEXT, shift_y=-HEIGHT_LINE // 2)
 
@@ -65,12 +69,12 @@ class LobbyBlock:
 
         self.__line = Image(self.__surface, BACKGROUND_BLOCK_LINE, self.__background, SelectPositioning.down,
                             height=HEIGHT_LINE, width=self.__background.width)
-        # load_image(path_block_lobby_not_selected, width=self.width, height=10,
-        #                                        proportionately=False)
-        #
-        # Задний фон текстов
-        # self.__background_image_text = load_image(path_text_selection, size_x=self.__name_lobby.__object.get_width(),
-        #                                           size_y=self.__name_lobby.__object.get_height(), select_size=False)
+
+        self.__button_connection = ButtonDefault(surface=self.__surface, parent=self.__background,
+                                                 selected_positioning=SelectPositioning.right, text="Вход",
+                                                 size_font=SIZE_FONT, color_text=COLOR_TEXT_LOBBY,
+                                                 path_font=DEFAULT_PATH_FONT,
+                                                 shift_x=-DISTANCE_BETWEEN_BLOCK_AND_TEXT, shift_y=-HEIGHT_LINE // 2)
 
         # Цвет круга (По умолчанию зеленый)
         self.__color_circle = (114, 166, 124)
@@ -102,12 +106,16 @@ class LobbyBlock:
     def y(self):
         return self.__background.y
 
+    def checking_clicks(self, mouse, is_clicked=False):
+        self.__button_connection.check_input_button(mouse, is_clicked)
+
     # Отрисовка блока
     def draw(self) -> None:
         self.__background.draw()
         self.__line.draw()
         self.__background_name.draw()
         self.__name.draw()
+        self.__button_connection.draw()
         # self.__surface.blit(self.__block_image_not_selected, (distance_between_block_lobby, y))
         #
         # # self.__surface.blit(self.__background_image_text,
