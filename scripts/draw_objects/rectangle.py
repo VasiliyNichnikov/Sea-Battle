@@ -1,5 +1,6 @@
 from scripts.position.positioning_operation import PositioningOperation, PositionAndSize, SelectPositioning
 from pygame import Surface
+from pygame import Rect
 from pygame import draw as draw_pg
 
 
@@ -10,9 +11,19 @@ class Rectangle(PositioningOperation):
         self.__surface = surface
         self.__color = color
         self.__outline = outline
+        self.__rect = Rect(self.x, self.y, self.width, self.height)
+
+    def change_color(self, color: tuple):
+        self.__color = color
+
+    @property
+    def rect(self) -> Rect:
+        return self.__rect
 
     def draw(self):
         super(Rectangle, self).draw()
-        draw_pg.rect(self.__surface, self.__color, (self.x, self.y, self.width, self.height), self.__outline)
+        self.__rect.x, self.__rect.y, self.__rect.width, self.__rect.height = self.x, self.y, self.width, self.height
+        draw_pg.rect(self.__surface, self.__color, self.__rect, self.__outline)
+
 
 

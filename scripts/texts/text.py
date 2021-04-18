@@ -15,7 +15,6 @@ class Text(PositioningOperation):
         self.__anti_aliasing = anti_aliasing
         self.__color = color
         self.render_text(self.__text)
-
         super().__init__(parent, selected_positioning, self.__height, self.__width, shift_x, shift_y)
 
     def render_text(self, new_text) -> None:
