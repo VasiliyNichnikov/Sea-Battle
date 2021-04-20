@@ -1,7 +1,8 @@
 """
     Данный класс используется для позиционирование объекта относительно родителя
 """
-
+from pygame import Vector2
+from scripts.animation import follow
 from scripts.position.position_and_size import PositionAndSize
 from scripts.transfers.enum_position import SelectPositioning
 
@@ -11,8 +12,8 @@ class Positioning:
         self.__parent = parent
         self.__child = child
         self.__selectedPosition = selected_positioning
-        # self.__shift_x = shift_x
-        # self.__shift_y = shift_y
+
+    # Lerp(a, b, t) = a + (b - a) * t
 
     def _calculations(self, shift_x: int = 0, shift_y: int = 0):
         try:
@@ -20,6 +21,11 @@ class Positioning:
             return x + self.__parent.x + shift_x, y + self.__parent.y + shift_y
         except KeyError as e:
             raise ValueError('Undefined unit: {}'.format(e.args[0]))
+
+    # def __lerp(self, a: tuple, b: tuple, t: float):
+    #     start = Vector2(a)
+    #     end = Vector2(b)
+    #     return start + (end - start) * t
 
     def __get_calculation(self):
         return {

@@ -20,8 +20,6 @@ class PositioningOperation(Positioning, PositionAndSize):
         self.__shift_x += shift_x
         self.__shift_y += shift_y
 
-        # self.__shift_x, self.__shift_y = follow((self.__shift_x, self.__shift_y), (self.__shift_x + shift_x, self.__shift_y + shift_y))
-
         if self.__parent is not None:
             self.__x, self.__y = self._calculations(self.__shift_x, self.__shift_y)
 
@@ -30,6 +28,7 @@ class PositioningOperation(Positioning, PositionAndSize):
 
     def draw(self):
         self.__change_x_and_y()
+        # print("Draw", self.__x, self.__y)
 
     @property
     def height(self):

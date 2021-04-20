@@ -1,29 +1,32 @@
-from scripts.position.positioning_operation import PositioningOperation, PositionAndSize, SelectPositioning
-from pygame import Surface
+# from scripts.position.positioning_operation import PositioningOperation, PositionAndSize, SelectPositioning
+from pygame import Surface, Vector2
 from pygame import Rect
+from typing import List
+from scripts.colors import BLACK
+from scripts.main_objects.draw_object import DrawObject
+from scripts.main_objects.transform import Transform
 from pygame import draw as draw_pg
 
 
-class Rectangle(PositioningOperation):
-    def __init__(self, surface: Surface, parent: PositionAndSize, selected_positioning: SelectPositioning, height: int, width: int,
-                 shift_x: int = 0, shift_y: int = 0, color: tuple = (0, 0, 0), outline: int = 0):
-        super().__init__(parent, selected_positioning, height, width, shift_x, shift_y)
+class Rectangle(DrawObject):
+    def __init__(self, surface: Surface):
+        super().__init__()
+
+        self.color = BLACK
+        self.outline = 0
+        self.transform = Transform()
+
         self.__surface = surface
-        self.__color = color
-        self.__outline = outline
-        self.__rect = Rect(self.x, self.y, self.width, self.height)
+        self.__rect: Rect = Rect(0, 0, 0, 0)
+        self.__update_rect()
 
-    def change_color(self, color: tuple):
-        self.__color = color
-
-    @property
-    def rect(self) -> Rect:
-        return self.__rect
+    def __update_rect(self):
+        self.__rect = Rect(self.transform.position.x, self.transform.position.y,
+                           self.transform.size.x, self.transform.size.y)
 
     def draw(self):
-        super(Rectangle, self).draw()
-        self.__rect.x, self.__rect.y, self.__rect.width, self.__rect.height = self.x, self.y, self.width, self.height
-        draw_pg.rect(self.__surface, self.__color, self.__rect, self.__outline)
+        self.__update_rect()
+        draw_pg.rect(self.__surface, self.color, self.__rect, self.outline)
 
 
 

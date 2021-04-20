@@ -6,18 +6,18 @@ class Animation:
         pass
 
 
-LERP_FACTOR = 0.05
-minimum_distance = 25.0
-maximum_distance = 100.0
+LERP_FACTOR = 0.01
+minimum_distance = 0.01
+maximum_distance = 1000.0
 
 
 def follow(pos_start, pos_end):
-    global maximum_distance
     target_vector = pygame.math.Vector2(*pos_start)
     follower_vector = pygame.math.Vector2(*pos_end)
     new_follower_vector = pygame.math.Vector2(*pos_end)
 
     distance = follower_vector.distance_to(target_vector)
+    # print(distance)
     # print(distance)
     if distance > minimum_distance:
         direction_vector = (target_vector - follower_vector) / distance

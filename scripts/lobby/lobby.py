@@ -1,4 +1,5 @@
 import pygame
+from pygame import Vector2
 from requests import Session
 import sys
 # Пустой объект
@@ -10,7 +11,7 @@ from scripts.position.positioning_operation import PositioningOperation, Positio
 # Изображения
 from scripts.images.image import Image
 # Дополнительные параметры
-from scripts.colorsParameters import WHITE, COLOR_TOP_BLOCK
+from scripts.colors import WHITE, COLOR_TOP_BLOCK
 from scripts.main.mainParameters import FPS, BACKGROUND_MENU_LOBBY
 from scripts.lobby.lobbyParameters import HEIGHT_BLOCK, WIDTH_BLOCK, \
     DISTANCE_BETWEEN_BLOCKS, ANIMATION_SPEED, HEIGHT_SCREEN, WIDTH_SCREEN
@@ -32,29 +33,17 @@ class Lobby(PositioningOperation):
             # Максимальное кол-во блоков лобби
             self.__max_blocks = len(values['list_lobbies'])
 
-            self.parent_blocks_lobbies = Empty(surface=self.surface, parent=self,
-                                               selected_positioning=SelectPositioning.up,
-                                               width=WIDTH_BLOCK,
-                                               height=(HEIGHT_BLOCK + DISTANCE_BETWEEN_BLOCKS) * self.__max_blocks,
-                                               shift_y=HEIGHT_BLOCK, outline=2)
+            self.parent_blocks_lobbies = Empty(surface=self.surface)
+            self.parent_blocks_lobbies.transform.size = Vector2(WIDTH_BLOCK,
+                                                                (HEIGHT_BLOCK + DISTANCE_BETWEEN_BLOCKS)
+                                                                * self.__max_blocks)
+            self.parent_blocks_lobbies.transform.position = Vector2(5, HEIGHT_BLOCK)
+            self.parent_blocks_lobbies.outline = 1
 
             self.__initializing_blocks(values)
             self.__length_height_blocks = (HEIGHT_BLOCK + DISTANCE_BETWEEN_BLOCKS) * (self.__max_blocks + 1)
             if self.__length_height_blocks > HEIGHT_SCREEN:
                 self.__movement_block = True
-
-        # Создание кнопки, которая отвечает за создание сервера
-        # self.button_create_server = Button(self.surface, 2, 2, (0, 0, 0), 'Создать сервер', (255, 255, 255),
-        #                                    path_font=path_font, size_font=30)
-        # Создание блока лобби
-        # self.creating_lobby = CreatingLobby(self.surface, 400, 400)
-        # Задний фон лобби
-        # self.background_image = load_image(path_background_menu, size_x=screen_width,
-        #                                    size_y=screen_height, select_size=False)
-
-        # self.test_text = Text(surface=self.surface, text='Test', size_font=40, color=(0, 0, 0), path_font=path_font,
-        #                       parent=self,
-        #                       selected_positioning=SelectPositioning.left_down)
 
     def __creating_screen(self):
         self.FPS = FPS
@@ -62,7 +51,6 @@ class Lobby(PositioningOperation):
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Sea Battle')
         self.surface.fill(WHITE)
-        # print(type(self.surface))
 
     def __connecting_server(self) -> (bool, str):
         session = Session()
@@ -75,30 +63,24 @@ class Lobby(PositioningOperation):
     def __initializing_blocks(self, values):
         self.__blocks = [
             LobbyBlock(surface=self.surface, name=values['list_lobbies'][lobby_index]['name'], index=lobby_index,
-                       parent=self.parent_blocks_lobbies, width=self.parent_blocks_lobbies.width,
+                       parent=self.parent_blocks_lobbies, width=self.parent_blocks_lobbies.transform.size.x,
                        height=HEIGHT_BLOCK,
                        shift_y=(HEIGHT_BLOCK + DISTANCE_BETWEEN_BLOCKS) * lobby_index,
                        lock=values['list_lobbies'][lobby_index]['lock'], selected_positioning=SelectPositioning.up)
             for lobby_index in range(self.__max_blocks)]
-        # Выбранный блок лобби (номер)
-        # self.select_number_block = 0
 
     def start_lobby(self):
         while True:
             # Background -----------------------------------------------------------------------------------------------
             self.background.draw()
+            self.parent_blocks_lobbies.draw()
 
             for block_lobby in self.__blocks:
                 block_lobby.draw()
 
-            pygame.draw.rect(self.surface, COLOR_TOP_BLOCK,
-                             (0, 0, WIDTH_SCREEN, HEIGHT_BLOCK - DISTANCE_BETWEEN_BLOCKS))
-            # self.button_create_server.draw_button(screen_width - self.button_create_server.width - 5,
-            #                                       size_field_top // 2 - self.button_create_server.height // 2)
-            # Отрисовка создания лобби
-            # if self.creating_lobby.draw_block:
-            #     self.creating_lobby.draw(screen_width // 2 - self.creating_lobby.width // 2,
-            #                              screen_height // 2 - self.creating_lobby.height // 2)
+            # pygame.draw.rect(self.surface, COLOR_TOP_BLOCK,
+            #                  (0, 0, WIDTH_SCREEN, HEIGHT_BLOCK - DISTANCE_BETWEEN_BLOCKS))
+
             # Events ---------------------------------------------------------------------------------------------------
             events = pygame.event.get()
             for event in events:
@@ -108,43 +90,20 @@ class Lobby(PositioningOperation):
                 if event.type == pygame.KEYDOWN:
                     pass
                 if event.type == pygame.MOUSEBUTTONDOWN:
+                    pass
                     if self.__movement_block:
-                        if event.button == 4 and self.__blocks[0].y < 70:
-                            self.parent_blocks_lobbies.move(shift_y=ANIMATION_SPEED)
-                        elif event.button == 5 and self.__blocks[-1].y > 420:
-                            self.parent_blocks_lobbies.move(shift_y=-ANIMATION_SPEED)
-                    if event.button == 1:
-                        for block in self.__blocks:
-                            block.checking_clicks(event.pos, True)
-                if event.type == pygame.MOUSEBUTTONUP:
-                    if event.button == 1:
-                        for block in self.__blocks:
-                            block.checking_clicks(event.pos)
+                        if event.button == 4:
+                            self.parent_blocks_lobbies.transform.position = Vector2(self.parent_blocks_lobbies.transform.position.x,
+                                                                                    self.parent_blocks_lobbies.transform.position.y + ANIMATION_SPEED)
+                        elif event.button == 5:
+                            self.parent_blocks_lobbies.transform.position = Vector2(self.parent_blocks_lobbies.transform.position.x,
+                                self.parent_blocks_lobbies.transform.position.y - ANIMATION_SPEED)
 
-                # if event.type == pygame.MOUSEWHEEL:
-                #     print('Прокрутка колесика мыши')
-                #     if not self.creating_lobby.draw_block:
-                #         if self.list_objects_lobbies[self.select_number_block].lock:
-                #             block = self.list_objects_lobbies[self.select_number_block]
-                #             if event.key == pygame.K_RETURN:
-                #                 print(block.text_password)
-                #             elif event.key == pygame.K_BACKSPACE:
-                #                 block.text_password = block.text_password[:-1]
-                #             else:
-                #                 block.text_password += event.unicode
-                #
-                #         if event.key == pygame.K_UP and self.select_number_block - 1 >= 0:
-                #             self.select_number_block -= 1
-                #         if event.key == pygame.K_DOWN and self.select_number_block + 1 < self.max_blocks:
-                #             self.select_number_block += 1
-                #     else:
-                #         self.creating_lobby.entering_values(event)
-                #
-                # if event.type == pygame.MOUSEBUTTONDOWN:
-                #     if self.button_create_server.check_input_button(event.pos, True):
-                #         self.creating_lobby.draw_block = not self.creating_lobby.draw_block
-                #     if self.creating_lobby.draw_block:
-                #         self.creating_lobby.input_block(event)
+                    # if event.button == 1:
+                    #     for block in self.__blocks:
+                    #         block.checking_clicks(event.pos, True)
+                if event.type == pygame.MOUSEBUTTONUP:
+                    pass
 
             self.clock.tick(FPS)
             pygame.display.update()

@@ -1,23 +1,28 @@
 from scripts.position.positioning_operation import PositioningOperation, PositionAndSize, SelectPositioning
-from pygame import Surface
+from pygame import Surface, Rect
+from scripts.colors import BLACK
+from scripts.main_objects.transform import Transform
+from scripts.main_objects.draw_object import DrawObject
 from pygame import draw as draw_pg
 
 
-class Empty(PositioningOperation):
-    def __init__(self, parent: PositionAndSize, selected_positioning: SelectPositioning, height: int, width: int,
-                 shift_x: int = 0, shift_y: int = 0,
-                 surface: Surface = None, color: tuple = (0, 0, 0), outline: int = 0):
-        super().__init__(parent, selected_positioning, height, width, shift_x, shift_y)
+class Empty(DrawObject):
+    def __init__(self, surface: Surface = None):
         self.__surface = surface
-        self.__color = color
-        self.__outline = outline
+        self.color = BLACK
+        self.outline = 0
+
+        self.transform = Transform()
         self.__draw = False
+        self.__rect = Rect(0, 0, 0, 0)
         if self.__surface is not None:
             self.__draw = True
 
-    def draw(self):
-        super(Empty, self).draw()
-        if self.__draw:
-            draw_pg.rect(self.__surface, self.__color, (self.x, self.y, self.width, self.height), self.__outline)
+    def __update_rect(self) -> None:
+        self.__rect = self.transform.position.x, self.transform.position.y, self.transform.size.x, self.transform.size.y
 
+    def draw(self) -> None:
+        if self.__draw:
+            self.__update_rect()
+            draw_pg.rect(self.__surface, self.color, self.__rect, self.outline)
 
