@@ -2,7 +2,7 @@ from pygame.image import load
 from pygame.transform import scale
 
 
-def load_image(path, width=0, height=0, proportionately=True):
+def load_image(path, width: int = 0, height: int = 0, proportionately=True):
     image = load(path)
     if width != 0 and height != 0 and proportionately:
         image_size_x, image_size_y = image.get_width(), image.get_height()
@@ -14,6 +14,5 @@ def load_image(path, width=0, height=0, proportionately=True):
         width = image.get_width()
     if height == 0:
         height = image.get_height()
-
     image = scale(image, (width, height))
     return image

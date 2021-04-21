@@ -1,6 +1,6 @@
 from map import Map
 from allConditions import ConditionPlayerMap, ConditionFunctionMap, ConditionShip
-from textAndButtonAndInputPanel import Text
+# from textAndButtonAndInputPanel import Text
 from colorsAndMainParameters import WHITE, BLUE_AZURE, RED
 from colorsAndMainParameters import height, width, distance_between_maps, border, distance_screen_up_maps, path_font, \
     path_json_player, FPS
@@ -49,8 +49,8 @@ class Game:
         # Создание карты противника
         self.enemy_map = create_map('Enemy', ConditionPlayerMap.Enemy)
         # Создание текста
-        self.nickname_player_text = Text(self.surface, 'PLAYER', 40, BLUE_AZURE, True, path_font)
-        self.nickname_enemy_text = Text(self.surface, 'ENEMY_258', 40, RED, True, path_font)
+        # self.nickname_player_text = Text(self.surface, 'PLAYER', 40, BLUE_AZURE, True, path_font)
+        # self.nickname_enemy_text = Text(self.surface, 'ENEMY_258', 40, RED, True, path_font)
 
     # Запуск функции в классе Map
     def start_function_map(self, condition_function_map, **kwargs):
@@ -129,15 +129,15 @@ class Game:
             self.start_function_map(ConditionFunctionMap.DrawMap)
 
             # Отрисовка текста
-            self.nickname_player_text.draw_text(
-                position=(border + width // 2 - self.nickname_player_text.__object.get_width() // 2,
-                          distance_screen_up_maps // 2 - self.nickname_player_text.__object.get_height() // 2 - border)
-            )
-            self.nickname_enemy_text.draw_text(
-                position=(
-                    border + width // 2 - self.nickname_enemy_text.__object.get_width() // 2 + width + distance_between_maps,
-                    distance_screen_up_maps // 2 - self.nickname_enemy_text.__object.get_height() // 2 - border)
-            )
+            # self.nickname_player_text.draw_text(
+            #     position=(border + width // 2 - self.nickname_player_text.__object.get_width() // 2,
+            #               distance_screen_up_maps // 2 - self.nickname_player_text.__object.get_height() // 2 - border)
+            # )
+            # self.nickname_enemy_text.draw_text(
+            #     position=(
+            #         border + width // 2 - self.nickname_enemy_text.__object.get_width() // 2 + width + distance_between_maps,
+            #         distance_screen_up_maps // 2 - self.nickname_enemy_text.__object.get_height() // 2 - border)
+            # )
             # Обработка событий
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

@@ -7,7 +7,7 @@ from scripts.draw_objects.empty import Empty
 # Блок лобби
 from scripts.lobby.lobbyBlock import LobbyBlock
 # Позиция объектов
-from scripts.position.positioning_operation import PositioningOperation, PositionAndSize, SelectPositioning
+from scripts.position.positioningOperation import PositioningOperation, PositionAndSize, SelectPositioning
 # Изображения
 from scripts.images.image import Image
 # Дополнительные параметры
@@ -24,9 +24,9 @@ class Lobby(PositioningOperation):
         self.__creating_screen()
         condition, values = self.__connecting_server()
 
-        self.background = Image(surface=self.surface, path=BACKGROUND_MENU_LOBBY, parent=self,
-                                selected_positioning=SelectPositioning.center,
-                                height=self.height, width=self.width)
+        # self.background = Image(surface=self.surface, path=BACKGROUND_MENU_LOBBY, parent=self,
+        #                         selected_positioning=SelectPositioning.center,
+        #                         height=self.height, width=self.width)
         self.__movement_block = False
 
         if condition:
@@ -38,7 +38,7 @@ class Lobby(PositioningOperation):
                                                                 (HEIGHT_BLOCK + DISTANCE_BETWEEN_BLOCKS)
                                                                 * self.__max_blocks)
             self.parent_blocks_lobbies.transform.position = Vector2(5, HEIGHT_BLOCK)
-            self.parent_blocks_lobbies.outline = 1
+            self.parent_blocks_lobbies.rectangle.outline = 1
 
             self.__initializing_blocks(values)
             self.__length_height_blocks = (HEIGHT_BLOCK + DISTANCE_BETWEEN_BLOCKS) * (self.__max_blocks + 1)
@@ -63,7 +63,7 @@ class Lobby(PositioningOperation):
     def __initializing_blocks(self, values):
         self.__blocks = [
             LobbyBlock(surface=self.surface, name=values['list_lobbies'][lobby_index]['name'], index=lobby_index,
-                       parent=self.parent_blocks_lobbies, width=self.parent_blocks_lobbies.transform.size.x,
+                       parent=self.parent_blocks_lobbies.transform, width=self.parent_blocks_lobbies.transform.size.x,
                        height=HEIGHT_BLOCK,
                        shift_y=(HEIGHT_BLOCK + DISTANCE_BETWEEN_BLOCKS) * lobby_index,
                        lock=values['list_lobbies'][lobby_index]['lock'], selected_positioning=SelectPositioning.up)
@@ -72,7 +72,8 @@ class Lobby(PositioningOperation):
     def start_lobby(self):
         while True:
             # Background -----------------------------------------------------------------------------------------------
-            self.background.draw()
+            # self.background.draw()
+            self.surface.fill(WHITE)
             self.parent_blocks_lobbies.draw()
 
             for block_lobby in self.__blocks:
@@ -93,12 +94,14 @@ class Lobby(PositioningOperation):
                     pass
                     if self.__movement_block:
                         if event.button == 4:
-                            self.parent_blocks_lobbies.transform.position = Vector2(self.parent_blocks_lobbies.transform.position.x,
-                                                                                    self.parent_blocks_lobbies.transform.position.y + ANIMATION_SPEED)
+                            self.parent_blocks_lobbies.transform.lerp(
+                                Vector2(self.parent_blocks_lobbies.transform.position.x,
+                                        self.parent_blocks_lobbies.transform.position.y + ANIMATION_SPEED), 0.01)
+                            # self.parent_blocks_lobbies.transform.position.y += ANIMATION_SPEED
                         elif event.button == 5:
-                            self.parent_blocks_lobbies.transform.position = Vector2(self.parent_blocks_lobbies.transform.position.x,
-                                self.parent_blocks_lobbies.transform.position.y - ANIMATION_SPEED)
-
+                            self.parent_blocks_lobbies.transform.lerp(
+                                Vector2(self.parent_blocks_lobbies.transform.position.x,
+                                        self.parent_blocks_lobbies.transform.position.y - ANIMATION_SPEED), 0.01)
                     # if event.button == 1:
                     #     for block in self.__blocks:
                     #         block.checking_clicks(event.pos, True)

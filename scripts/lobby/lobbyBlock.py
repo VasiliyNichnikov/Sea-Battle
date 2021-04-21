@@ -1,6 +1,9 @@
 import pygame
 from pygame import Surface, Vector2
-from scripts.position.positioning_operation import PositionAndSize, SelectPositioning
+from scripts.position.positioningOperation import PositionAndSize, SelectPositioning
+from scripts.lobby.backgroundBlock import BackgroundBlock
+from scripts.lobby.backgroundLine import BackgroundLine
+from scripts.main_objects.transform import Transform
 from scripts.texts.text import Text
 # Прямоугольник
 from scripts.draw_objects.rectangle import Rectangle
@@ -20,7 +23,7 @@ from scripts.colors import WHITE, COLOR_GRAY_BLOCK, COLOR_BLOCK, COLOR_TEXT_LOBB
 
 
 class LobbyBlock:
-    def __init__(self, surface: Surface, name: str, index: int, parent,
+    def __init__(self, surface: Surface, name: str, index: int, parent: Transform,
                  selected_positioning: SelectPositioning,
                  height: int, width: int, shift_x: int = 0, shift_y: int = 0, lock: bool = False) -> None:
         self.__surface = surface
@@ -31,17 +34,20 @@ class LobbyBlock:
 
         self.__text_password = ''
 
+        self.__background = BackgroundBlock(surface)
+        self.__background.transform.set_parent(parent)
+        self.__background.transform.position = Vector2(shift_x, shift_y)
+
+        self.__line = BackgroundLine(surface)
+        self.__line.transform.set_parent(self.__background.transform)
+        self.__line.transform.position = Vector2(0, self.__background.transform.size.y - HEIGHT_LINE)
+        self.__line.loading_image()
+
         # Создание текста, пароль, который ввел пользователь
         # self.__password = Text(surface=self.__surface, text=self.__text_password, size_font=SIZE_FONT,
         #                        color=COLOR_GRAY_BLOCK,
         #                        path_font=DEFAULT_PATH_FONT,
         #                        parent=self.__parent, selected_positioning=SelectPositioning.left, anti_aliasing=True)
-
-        self.__background = Rectangle(self.__surface)
-        self.__background.transform.size = Vector2(width, height)
-        self.__background.transform.position = Vector2(shift_x, shift_y)
-        self.__background.transform.change_parent(self.__parent.transform)
-        self.__background.color = COLOR_GRAY_BLOCK
 
         # self.__background = Rectangle(self.__surface, self.__parent, self.__selected_positioning,
         #                               height, width, shift_x, shift_y, color=COLOR_BLOCK)
@@ -104,6 +110,7 @@ class LobbyBlock:
     # Отрисовка блока
     def draw(self) -> None:
         self.__background.draw()
+        self.__line.draw()
     #     self.__line.draw()
     #     self.__background_name.draw()
     #     self.__name.draw()

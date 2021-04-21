@@ -1,18 +1,30 @@
-from pygame import Surface
-from scripts.images.load_image import load_image
-from scripts.position.positioning_operation import PositioningOperation, PositionAndSize, SelectPositioning
+import os
+from pygame import Surface, Vector2
+from typing import Union
+from pygame.surface import SurfaceType
+from scripts.images.loadImage import load_image
 
 
-class Image(PositioningOperation):
-    def __init__(self, surface: Surface, path: str, parent: PositionAndSize, selected_positioning: SelectPositioning,
-                 height: int, width: int,
-                 shift_x: int = 0, shift_y: int = 0):
-        super().__init__(parent, selected_positioning, height, width, shift_x, shift_y)
-        self.__parent = parent
-        self.__surface = surface
-        self.__path_image = path
-        self.__image = load_image(path, width, height, proportionately=False)
+class Image:
+    def __init__(self):
+        self.__path = ""
+        self.__image: Union[Surface, SurfaceType] = None
 
-    def draw(self):
-        super(Image, self).draw()
-        self.__surface.blit(self.__image, (self.x, self.y))
+    @property
+    def path(self) -> str:
+        return self.__path
+
+    @path.setter
+    def path(self, value) -> None:
+        if os.path.exists(value):
+            self.__path = value
+
+    @property
+    def image(self) -> Union[Surface, SurfaceType]:
+        return self.__image
+
+    def loading_image(self, size: Vector2) -> bool:
+        if self.__path != "" and size.x != 0 and size.y != 0:
+            self.__image = load_image(self.__path, int(size.x), int(size.y), proportionately=False)
+            return True
+        return False
