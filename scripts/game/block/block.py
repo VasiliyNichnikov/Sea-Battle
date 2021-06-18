@@ -7,15 +7,18 @@ from scripts.game.block.parametersBlock import ParametersBlock
 
 class Block:
     def __init__(self, surface: Surface, number_block: Vector2, border: Vector2, block_size) -> None:
-        self.__parameters_block = ParametersBlock(surface, number_block, border, block_size)
-        self.__position_block = self.__parameters_block.position_block
-        self.__condition_block = self.__parameters_block.condition_block
+        self.__parameters = ParametersBlock(surface, number_block, border, block_size)
+        self.__position = self.__parameters.position_block
+        self.__condition = self.__parameters.condition_block
 
-    def check_input_block(self, mouse) -> bool:
-        rect = self.__position_block.rect
+    def check_input(self, mouse) -> bool:
+        rect = self.__position.rect
         if rect.topleft[0] < mouse[0] < rect.bottomright[0] and rect.topleft[1] < mouse[1] < rect.bottomright[1]:
             return True
         return False
+
+    def draw(self):
+        pass
 
     # Отрисовка воды
     # def draw_water(self) -> None:
