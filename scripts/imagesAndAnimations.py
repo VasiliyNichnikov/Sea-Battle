@@ -1,7 +1,7 @@
 import pygame
 import random
-from scripts.images.load_image import load_image
-from scripts.colorsAndMainParameters import block_size
+from images.loadImage import load_image
+from colorsAndMainParameters import block_size
 
 
 # Анимация воды

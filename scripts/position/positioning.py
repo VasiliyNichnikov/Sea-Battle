@@ -3,8 +3,8 @@
 """
 from pygame import Vector2
 from scripts.animation import follow
-from scripts.position.position_and_size import PositionAndSize
-from scripts.transfers.enum_position import SelectPositioning
+from scripts.position.positionAndSize import PositionAndSize
+from scripts.transfers.enumPosition import SelectPositioning
 
 
 class Positioning:

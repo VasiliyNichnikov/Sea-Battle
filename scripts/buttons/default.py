@@ -1,7 +1,7 @@
 from pygame import Surface
 from scripts.draw_objects.rectangle import Rectangle
 from scripts.texts.text import Text
-from scripts.position.positioning_operation import PositionAndSize, SelectPositioning
+from scripts.position.positioningOperation import PositionAndSize, SelectPositioning
 
 
 class ButtonDefault:
