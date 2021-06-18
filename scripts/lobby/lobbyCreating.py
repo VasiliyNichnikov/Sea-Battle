@@ -39,7 +39,7 @@ class CreatingLobby:
 
     def input_block(self, event):
         for panel in self.__input_panels:
-            if panel.check_input_button(event.pos):
+            if panel.check_input_button(event.position):
                 self.__select_panel = panel
                 break
             else:

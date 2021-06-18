@@ -37,12 +37,7 @@ class ConditionAxisShip(Enum):
 
 
 # Состояние блока
-class ConditionBlock(Enum):
-    Empty = 0
-    Selected = 1
-    Lock = 2
-    Miss = 3
-    Hit = 4
+
 
 
 # Состояние кнопок в меню
