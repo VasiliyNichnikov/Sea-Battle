@@ -1,8 +1,8 @@
 import unittest
 from pygame import Vector2
 from pygame import display
-from scripts.game.block.conditionBlock import ConditionBlock
-from scripts.game.block.parametersBlock import ParametersBlock
+from scripts.game2.block.conditionBlock import ConditionBlock
+from scripts.game2.block.parametersBlock import ParametersBlock
 
 
 class ParametersBlockTest(unittest.TestCase):

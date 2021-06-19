@@ -1,4 +1,4 @@
-from scripts.game.block.condition import EnumBlock
+from scripts.game2.block.condition import EnumBlock
 
 
 class ConditionBlock:

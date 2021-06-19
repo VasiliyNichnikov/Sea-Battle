@@ -1,6 +1,6 @@
 import unittest
-from scripts.game.block.condition import EnumBlock
-from scripts.game.block.conditionBlock import ConditionBlock
+from scripts.game2.block.condition import EnumBlock
+from scripts.game2.block.conditionBlock import ConditionBlock
 
 
 class ConditionBlockTest(unittest.TestCase):

@@ -1,6 +1,6 @@
 import unittest
 from pygame import Vector2, Rect
-from scripts.game.block.positionBlock import PositionBlock
+from scripts.game2.block.positionBlock import PositionBlock
 
 
 class PositionBlockTest(unittest.TestCase):

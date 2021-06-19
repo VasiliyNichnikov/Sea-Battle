@@ -1,6 +1,6 @@
 from pygame import Vector2, Surface
-from scripts.game.block.conditionBlock import ConditionBlock
-from scripts.game.block.positionBlock import PositionBlock
+from scripts.game2.block.conditionBlock import ConditionBlock
+from scripts.game2.block.positionBlock import PositionBlock
 
 
 class ParametersBlock:

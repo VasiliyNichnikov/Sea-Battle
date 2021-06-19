@@ -1,5 +1,5 @@
 from pygame import Rect, Vector2
-from scripts.game.block.pointsPerimeter import PointsPerimeter
+from scripts.game2.block.pointsPerimeter import PointsPerimeter
 
 
 class PositionBlock:

@@ -5,11 +5,15 @@ from colorsAndMainParameters import WHITE, BLACK, RED, GREEN, YANDEX_COLOR, SEA_
 from colorsAndMainParameters import number_blocks, block_size, border, distance_between_blocks, \
     distance_screen_up_maps, height, width, distance_between_maps
 import pygame
+from pygame import Surface, Vector2
+from scripts.game.block.block import Block
+from scripts.game.map.parametersMap import ParametersMap
 
 
 class Map:
-    def __init__(self, surface, name, condition_player_map, list_json_file=None):
-        pass
+    def __init__(self, surface: Surface, name: str):
+        self.__parameters = ParametersMap(surface, name, Vector2(distance_between_maps + width,
+                                                                 distance_screen_up_maps))
         # self.condition_player_map = condition_player_map
         # self.condition_map = ConditionMap.Default
         # self.list_json_file = list_json_file
@@ -41,14 +45,14 @@ class Map:
         self.__searching_ships()
 
     def __create_blocks(self):
+        list_blocks = self.__parameters.list_blocks
         for y in range(number_blocks):
             for x in range(number_blocks):
-                new_block = Block(surface=self.surface,
-                                  x=x, y=y,
-                                  border_x=self.border_x,
-                                  border_y=self.border_y,
+                new_block = Block(surface=self.__parameters.surface,
+                                  number_block=Vector2(x, y),
+                                  border=self.__parameters.border,
                                   block_size=block_size)
-                self.list_blocks.append(new_block)
+                list_blocks.append(new_block)
 
     def draw_map(self, condition_motion) -> None:
         color_frame = BLACK
