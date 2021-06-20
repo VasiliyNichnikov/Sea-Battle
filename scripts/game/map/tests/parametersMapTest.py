@@ -26,9 +26,9 @@ class ParametersMapTest(unittest.TestCase):
         b = self.border
         self.assertEqual(a, b)
 
-    def test_list_blocks(self):
-        a = self.parameters_map.list_blocks
-        b = []
+    def test_blocks(self):
+        a = self.parameters_map.blocks
+        b = [[object] * 10] * 10
         self.assertEqual(a, b)
 
     def test_rect(self):

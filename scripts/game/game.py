@@ -1,6 +1,7 @@
 # from map import Map
 # from allConditions import ConditionPlayerMap, ConditionFunctionMap, ConditionShip
 # from textAndButtonAndInputPanel import Text
+from scripts.game.map.map import Map
 from scripts.colorsAndMainParameters import WHITE, BLUE_AZURE, RED
 from scripts.colorsAndMainParameters import height, width, distance_between_maps, border, distance_screen_up_maps, path_font, \
     path_json_player, FPS
@@ -11,12 +12,10 @@ import pygame
 
 class Game:
     def __init__(self):
-        # Создание карты
-        # def create_map(name, condition_player_map, list_json_file=None):
-        #     new_map = Map(name=name, condition_player_map=condition_player_map, surface=self.surface,
-        #                   list_json_file=list_json_file)
-        #     self.list_maps.append(new_map)
-        #     return new_map
+        def create_map(name):
+            new_map = Map(self.surface, name)
+            # self.maps.append(new_map)
+            return new_map
 
         # self.connect_server = ConnectServer(host='localhost', port=5000)  # player_id=player_id,
         # self.player_id = self.connect_server.player_id
@@ -26,12 +25,9 @@ class Game:
         # if not self.first_motion:
         #     self.condition_motion = ConditionPlayerMap.Enemy
 
-        # Кол-во FPS
         self.FPS = FPS
-        # Запущена игра или нет
         self.runner = True
-        # Карты
-        self.list_maps = []
+        self.maps = []
 
         # Инициализация игры
         pygame.init()
@@ -40,6 +36,8 @@ class Game:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Sea Battle')
         self.surface.fill(WHITE)
+
+        self.player_map = create_map('Player')
 
         # self.player_map = create_map('Player', ConditionPlayerMap.Player,
         #                              self.__open_json(path_json_player)['description'])
@@ -121,6 +119,8 @@ class Game:
     def start_game(self):
         while self.runner:
             self.clock.tick(self.FPS)
+
+            self.player_map.draw()
 
             # Отрисовка карты
             # self.start_function_map(ConditionFunctionMap.DrawMap)

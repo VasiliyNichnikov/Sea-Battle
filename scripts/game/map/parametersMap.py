@@ -1,4 +1,4 @@
-import typing
+from typing import List, Type
 from pygame import Surface, Vector2, Rect
 from scripts.colorsAndMainParameters import number_blocks, block_size
 
@@ -8,7 +8,7 @@ class ParametersMap:
         self.__surface = surface
         self.__name = name
         self.__border = border
-        self.__list_blocks = []
+        self.__blocks = [[object] * 10] * 10
         self.__rect = Rect(self.__border.x,
                            self.__border.y,
                            block_size * number_blocks,
@@ -27,8 +27,8 @@ class ParametersMap:
         return self.__border
 
     @property
-    def list_blocks(self) -> typing.List:
-        return self.__list_blocks
+    def blocks(self) -> List[List[Type[object]]]:
+        return self.__blocks
 
     @property
     def rect(self) -> Rect:

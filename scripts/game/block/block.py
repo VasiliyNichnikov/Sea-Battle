@@ -5,7 +5,7 @@ from pygame import Vector2, Surface
 from scripts.game.block.parametersBlock import ParametersBlock
 
 
-class Block:
+class Block(object):
     def __init__(self, surface: Surface, number_block: Vector2, border: Vector2, block_size) -> None:
         self.__parameters = ParametersBlock(surface, number_block, border, block_size)
         self.__position = self.__parameters.position_block
