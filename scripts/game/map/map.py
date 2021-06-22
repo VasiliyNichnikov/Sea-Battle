@@ -1,9 +1,8 @@
 # from block import Block
 # from ship import Ship
 # from allConditions import ConditionMap, ConditionPlayerMap, ConditionBlock
-from scripts.colorsAndMainParameters import WHITE, BLACK, RED, GREEN, YANDEX_COLOR, SEA_WATER
-from scripts.colorsAndMainParameters import number_blocks, block_size, border, distance_between_blocks, \
-    distance_screen_up_maps, height, width, distance_between_maps
+from scripts.colorsAndMainParameters import BLACK, RED, SEA_WATER
+from scripts.colorsAndMainParameters import number_blocks, block_size, distance_between_blocks
 import pygame
 from pygame import Surface, Vector2, Rect
 from scripts.game.block.block import Block
@@ -13,38 +12,8 @@ from scripts.game.map.parametersMap import ParametersMap
 
 
 class Map:
-    def __init__(self, surface: Surface, name: str):
-        self.__parameters = ParametersMap(surface, name, Vector2(distance_between_maps + width,
-                                                                 distance_screen_up_maps))
-        # self.condition_player_map = condition_player_map
-        # self.condition_map = ConditionMap.Default
-        # self.list_json_file = list_json_file
-
-        # self.border_x = distance_between_maps + width
-        # self.border_y = distance_screen_up_maps
-
-        # if self.condition_player_map == ConditionPlayerMap.Player:
-        #     self.border_x = border
-
-        # self.surface = surface
-        # self.list_blocks = []
-        # self.list_ships = []
-        # self.rect = pygame.Rect(self.border_x, self.border_y, block_size * number_blocks, block_size * number_blocks)
-
-        # self.__create_blocks()
-
-        # if self.list_json_file is not None:
-        #     self.__convert_json_file_and_search_ships()
-        #     self.condition_map = ConditionMap.Lock
-
-    # def __convert_json_file_and_search_ships(self):
-    #     for block in self.list_blocks:
-    #         x, y = block.number_block
-    #         if self.list_json_file[y][x] == '1':
-    #             block.change_to_selected()
-    #         else:
-    #             block.change_to_empty()
-    #     self.__searching_ships()
+    def __init__(self, parameters: ParametersMap):
+        self.__parameters = parameters
 
     def __create_blocks(self):
         blocks = self.__parameters.blocks
@@ -55,46 +24,44 @@ class Map:
                                   border=self.__parameters.border,
                                   block_size=block_size)
                 blocks[x][y] = new_block
-                print(blocks[x][y])
 
     def draw(self) -> None:
         self.__draw_fields()
 
+    def check_input(self, mouse: Vector2) -> bool:
+        rect = self.__parameters.rect
+        if rect.topleft[0] < mouse[0] < rect.bottomright[0] and rect.topleft[1] < mouse[1] < rect.bottomright[1]:
+            return True
+        return False
+
     def __draw_fields(self):
         position = block_size
+        condition = self.__parameters.condition
+        rect = self.__parameters.rect
 
-        player_field_draw_parameters = FieldBorderDrawParameters(
-            position=Rect(border, distance_screen_up_maps, height, width), color=BLACK)
-        enemy_field_draw_parameters = FieldBorderDrawParameters(
-            position=Rect(width + distance_between_maps, distance_screen_up_maps, width, height), color=RED)
+        if condition == EnumMap.Player:
+            field_draw_parameters = FieldBorderDrawParameters(position=rect, color=BLACK)
+        else:
+            field_draw_parameters = FieldBorderDrawParameters(position=rect, color=RED)
 
         for line in range(number_blocks - 1):
-            self.__draw_field(EnumMap.Player, position, player_field_draw_parameters)
-            self.__draw_field(EnumMap.Enemy, position, enemy_field_draw_parameters)
+            self.__draw_field(position, field_draw_parameters)
             position += block_size
 
-    def __draw_field(self, enum_map: EnumMap, position: int, field_draw_parameters: FieldBorderDrawParameters) -> None:
-        if enum_map == EnumMap.Player:
-            player_points_line = self.__get_position_lines(EnumMap.Player, position)
-            self.__draw_lines(player_points_line)
-        else:
-            enemy_points_line = self.__get_position_lines(EnumMap.Enemy, position)
-            self.__draw_lines(enemy_points_line)
+    def __draw_field(self, position: int, field_draw_parameters: FieldBorderDrawParameters) -> None:
+        points_line = self.__get_position_lines(position)
+        self.__draw_lines(points_line)
         self.__draw_outline_field_border(field_draw_parameters.color,
                                          field_draw_parameters.position)
 
-    @staticmethod
-    def __get_position_lines(enum_map: EnumMap, position: int) -> dict:
-        if enum_map == EnumMap.Player:
-            point_start_line_one = (border, position + distance_screen_up_maps)
-            point_end_line_one = (height + border, position + distance_screen_up_maps)
-            point_start_line_two = (position + border, distance_screen_up_maps)
-            point_end_line_two = (position + border, height + distance_screen_up_maps)
-        else:
-            point_start_line_one = (distance_between_maps + width, position + distance_screen_up_maps)
-            point_end_line_one = (distance_between_maps + width * 2, position + distance_screen_up_maps)
-            point_start_line_two = (distance_between_maps + width + position, distance_screen_up_maps)
-            point_end_line_two = (distance_between_maps + width + position, height + distance_screen_up_maps)
+    def __get_position_lines(self, position: int) -> dict:
+        border = self.__parameters.border
+        size = self.__parameters.size
+
+        point_start_line_one = (border.x, position + border.y)
+        point_end_line_one = (size.x + border.x, position + border.y)
+        point_start_line_two = (position + border.x, border.y)
+        point_end_line_two = (position + border.x, size.y + border.y)
 
         return {
             'point_start_line_one': point_start_line_one,
@@ -118,7 +85,7 @@ class Map:
         pygame.draw.line(self.__parameters.surface,
                          SEA_WATER, start_line_two, end_line_two, distance_between_blocks)
 
-    def __draw_outline_field_border(self, field_border_color: tuple, field_border_position: tuple) -> None:
+    def __draw_outline_field_border(self, field_border_color: tuple, field_border_position: Rect) -> None:
         pygame.draw.rect(self.__parameters.surface, field_border_color, field_border_position,
                          distance_between_blocks * 2)
 

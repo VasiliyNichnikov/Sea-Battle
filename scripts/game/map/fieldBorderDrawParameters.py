@@ -1,5 +1,6 @@
 from pygame import Rect
 
+
 class FieldBorderDrawParameters:
     def __init__(self, position: Rect, color: tuple):
         self.__position = position

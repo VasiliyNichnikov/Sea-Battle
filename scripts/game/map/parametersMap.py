@@ -1,18 +1,17 @@
 from typing import List, Type
 from pygame import Surface, Vector2, Rect
-from scripts.colorsAndMainParameters import number_blocks, block_size
+from scripts.game.map.condition import EnumMap
 
 
 class ParametersMap:
-    def __init__(self, surface: Surface, name: str, border: Vector2):
-        self.__surface = surface
+    def __init__(self, name: str, surface: Surface, condition: EnumMap, size: Vector2, border: Vector2):
         self.__name = name
+        self.__surface = surface
         self.__border = border
+        self.__condition = condition
         self.__blocks = [[object] * 10] * 10
-        self.__rect = Rect(self.__border.x,
-                           self.__border.y,
-                           block_size * number_blocks,
-                           block_size * number_blocks)
+        self.__size = size
+        self.__rect = Rect(self.__border.x, self.__border.y, size.x, size.y)
 
     @property
     def surface(self) -> Surface:
@@ -33,3 +32,11 @@ class ParametersMap:
     @property
     def rect(self) -> Rect:
         return self.__rect
+
+    @property
+    def size(self) -> Vector2:
+        return self.__size
+
+    @property
+    def condition(self) -> EnumMap:
+        return self.__condition

@@ -3,17 +3,23 @@
 # from textAndButtonAndInputPanel import Text
 from scripts.game.map.map import Map
 from scripts.colorsAndMainParameters import WHITE, BLUE_AZURE, RED
-from scripts.colorsAndMainParameters import height, width, distance_between_maps, border, distance_screen_up_maps, path_font, \
+from scripts.game.map.parametersMap import ParametersMap
+from scripts.colorsAndMainParameters import block_size, number_blocks
+from scripts.colorsAndMainParameters import height, width, distance_between_maps, border, distance_screen_up_maps, \
+    path_font, \
     path_json_player, FPS
 # from connectServer import ConnectServer
+from scripts.game.map.condition import EnumMap
+from scripts.colorsAndMainParameters import number_blocks, block_size
 import json
 import pygame
+from pygame import Vector2
 
 
 class Game:
     def __init__(self):
-        def create_map(name):
-            new_map = Map(self.surface, name)
+        def create_map(parameters_map: ParametersMap):
+            new_map = Map(parameters_map)
             # self.maps.append(new_map)
             return new_map
 
@@ -37,7 +43,17 @@ class Game:
         pygame.display.set_caption('Sea Battle')
         self.surface.fill(WHITE)
 
-        self.player_map = create_map('Player')
+        self.player_map = create_map(ParametersMap('Player',
+                                                   self.surface,
+                                                   condition=EnumMap.Player,
+                                                   size=Vector2(number_blocks * block_size, number_blocks * block_size),
+                                                   border=Vector2(border, distance_screen_up_maps)))
+
+        self.enemy_map = create_map(ParametersMap('Enemy',
+                                                  self.surface,
+                                                  condition=EnumMap.Enemy,
+                                                  size=Vector2(number_blocks * block_size, number_blocks * block_size),
+                                                  border=Vector2(distance_between_maps + width, distance_screen_up_maps)))
 
         # self.player_map = create_map('Player', ConditionPlayerMap.Player,
         #                              self.__open_json(path_json_player)['description'])
@@ -121,6 +137,7 @@ class Game:
             self.clock.tick(self.FPS)
 
             self.player_map.draw()
+            self.enemy_map.draw()
 
             # Отрисовка карты
             # self.start_function_map(ConditionFunctionMap.DrawMap)
